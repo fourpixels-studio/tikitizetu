@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<div class="container-fluid px-0">
+    <header class="position-relative" id="eventsHeader" style="background-image: url('{{ event.poster }}');">
+        <button onclick="goBack()" class="back-btn no-btn text-white position-absolute"><i style="font-size: 3rem;" class="fa-solid fa-circle-arrow-left"></i></button>
+    </header>
+    <div class="container mt-4 px-4">
+        <div class="row">
+            <h2 class="fw-bold">{{ event.name }} <span class="small float-end px-4 badge rounded-pill bg-secondary">1,500</span></h2>
+            <p class="text-muted">{{ event.event_description }}</p>
+            <div class="d-flex mb-3 flex-wrap justify-content-betwwen align-items-start">
+                <div class="col-6">
+                    <p class="small mb-0 text-muted">Date</p>
+                    <h5>{{ event.date }}</h5>
+                </div>
+                <div class="col-6">
+                    <p class="small mb-0 text-muted">Time</p>
+                    <h5>{{ event.start_time }} - {{ event.end_time }}</h5>
+                </div>
+                <div class="col-6">
+                    <p class="small mb-0 text-muted">Location</p>
+                    <h5>{{ event.location }}</h5>
+                </div>
+                <div class="col-6">
+                    <p class="small mb-0 text-muted">Venue</p>
+                    <h5>{{ event.venue }}</h5>
+                </div>
+            </div>
+            <div class="col">
+                <button data-bs-toggle="modal" data-bs-target="#buyTicketModal" type="button" class="btn btn-primary btn-lg rounded-pill px-5">Buy ticket</button>
+            </div>
+        </div>
+        <hr class="text-muted">
+        <h3 class="mb-3">Upcoming events</h3>
+        <div class="d-flex flex-row gap-3 mt-3 pb-4 events-overflow">
+            {% for event in upcoming_events %}
+            <div class="col-sm-12 col-lg-4">
+                {% include 'components/event.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

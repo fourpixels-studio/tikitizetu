@@ -1,0 +1,9 @@
+<div class="border rounded-4 p-3 bg-light">
+    <img src="{{ event.poster }}" alt="" style="height: 200px; width: 100%; object-fit: cover" class="rounded-4 img-fluid">
+    <div class="d-flex flex-column">
+        <h5 class="my-2">{{ event.name }}</h5>
+        <p class="mb-0 text-muted">{{ event.date }} - {{ event.start_time }}</p>
+        <small class="text-muted">{{ event.location }} - {{ event.venue }}</small>
+        <a href="{{ event.get_url }}" class="w-100 btn mt-2 btn-outline-primary px-4 rounded-pill">Buy ticket <i style="font-size: .8rem;" class="fa-solid fa-chevron-right ms-1"></i></a>
+    </div>
+</div>
