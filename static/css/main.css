@@ -14,3 +14,37 @@ html {
     padding: 0;
     margin: 0;
 }
+#eventsHeader{
+    height: 45vh;
+    width: 100%;
+    padding: 3rem;
+    object-fit: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.events-overflow {
+    overflow-x: auto; 
+    white-space: nowrap;
+    padding: 0.5rem 0;
+}
+
+.events-overflow .col-lg-4 {
+    display: inline-block;
+    vertical-align: top;
+}
+.back-btn {
+    margin: -1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+.back-btn i {
+    transition: transform 0.3s ease-in-out;
+}
+
+.back-btn:hover i{
+    transform: scale(1.2);
+    background-color: none;
+    transition: transform 0.3s ease-in-out;
+}
