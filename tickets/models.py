@@ -8,8 +8,13 @@ class Ticket(models.Model):
     ticket_number = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
     amount = models.CharField(max_length=5)
-    qr = models.FileField(max_length=100)
+    num_tickets = models.CharField(max_length=2, blank=True, null=True)
+    qr = models.FileField(upload_to='qrcodes/', max_length=100)
+    pdf_ticket = models.FileField(
+        upload_to='tickets/', max_length=100, null=True, blank=True)
     scan_count = models.PositiveIntegerField(default=0)
 
     @property
@@ -20,7 +25,7 @@ class Ticket(models.Model):
 
     @property
     def get_url(self):
-        return reverse("ticket_detail", kwargs={
+        return reverse("view_ticket", kwargs={
             "event_name": self.event.slug,
             "ticket_number": self.ticket_number,
         })
