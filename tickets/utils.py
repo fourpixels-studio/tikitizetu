@@ -1,127 +1,139 @@
-from fpdf import FPDF
 import qrcode
-from events.models import Event
-import os
-from django.conf import settings
-from datetime import datetime
-
-event = Event.objects.latest('date')
-qr_filename = ''
+from io import BytesIO
+from django.core.files import File
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
 
 
-class PDF(FPDF):
-    def set_ticket_number(self, ticket_number):
-        self.ticket_number = ticket_number
-
-    def set_first_name(self, first_name):
-        self.first_name = first_name
-
-    def set_last_name(self, last_name):
-        self.last_name = last_name
-
-    def header(self):
-        # Adding QR code and poster images to the header
-        self.image(qr_filename, 3, 10, 66)
-        self.image(event.poster, 70, 0, 140)
-
-        # Setting up font and displaying event details
-        self.set_y(80)
-        self.set_font('helvetica', "", 12)
-        self.multi_cell(0, 10, f"{self.first_name} {self.last_name}", ln=True)
-        self.set_font('helvetica', "B", 14)
-        self.multi_cell(0, 10, self.ticket_number, ln=True)
-        self.ln(4)
-        self.set_font('helvetica', "B", 18)
-        self.multi_cell(50, 7, str(event.name), ln=True)
-        self.ln(4)
-
-        # Additional event details
-        self.set_font('helvetica', "", 10)
-        self.set_text_color(80, 80, 80)
-        self.multi_cell(
-            50, 5, "This ticket admits one person. Minimum age of 21 years.", ln=True)
-        self.ln(6)
-        self.set_font('helvetica', "", 9)
-        self.set_text_color(80, 80, 80)
-
-        # Displaying event start, end, location, and address
-        start_datetime = datetime.combine(
-            event.date, event.start_time)
-        end_datetime = datetime.combine(
-            event.date, event.end_time)
-
-        self.cell(10, 5, "Start:")
-        self.set_x(30)
-        self.cell(
-            10, 5, start_datetime.strftime("%Y-%m-%d %I:%M %p"), ln=True)
-        self.cell(10, 5, "End:")
-        self.set_x(30)
-        self.cell(
-            10, 5, end_datetime.strftime("%Y-%m-%d %I:%M %p"), ln=True)
-        self.cell(10, 5, "Location:")
-        self.set_x(30)
-        self.cell(10, 5, str(event.location), ln=True)
-        self.cell(10, 5, "Venue:")
-        self.set_x(30)
-        self.cell(10, 5, str(event.venue), ln=True)
-        self.ln(10)
-
-        # Additional information about the event
-        self.set_font('helvetica', "", 9)
-        self.set_text_color(180, 180, 180)
-        self.multi_cell(
-            50, 5, "Your ID and ticket will be checked at the door.", ln=True)
-        self.multi_cell(
-            50, 5, "If your energy or ticket is not correct entrance will be denied.", ln=True)
-        self.multi_cell(50, 5, "No ticket refunds, entrance on own risk.")
-
-    def footer(self):
-        # Adding disclaimer text from an external file and displaying page number
-        self.set_y(-45)
-        self.set_font("helvetica", "", 5)
-        self.set_text_color(80, 80, 80)
-        self.multi_cell(0, 5, event.event_disclaimer, ln=True)
-        self.set_font("helvetica", "", 12)
-        self.set_text_color(0, 0, 0)
-        self.cell(0, 10, f"Page {self.page_no()}/{{nb}}", align="C")
+def generate_qr(ticket_url, ticket):
+    """
+    Generate a QR code for the given ticket URL and save it to the ticket's `qr` field.
+    """
+    qr = qrcode.make(ticket_url)
+    qr_io = BytesIO()
+    qr.save(qr_io, format='PNG')
+    qr_io.seek(0)
+    ticket.qr.save(f'qr_{ticket.ticket_number}.png', File(qr_io), save=False)
 
 
-def generate_pdf_ticket(first_name, last_name, ticket_number, event_name, event_date):
-    global qr_filename
-    # Create a QR code with participant and event details
-    qr_data = f"Name: {first_name} {last_name}\nTicket Number: {ticket_number}\nEvent: {event_name}\nDate: {event_date}"
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(qr_data)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
+def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_number, amount, num_tickets, ticket_type):
+    """
+    Generate a PDF for the given ticket with a layout similar to the provided HTML.
+    """
+    pdf_buffer = BytesIO()
+    p = canvas.Canvas(pdf_buffer, pagesize=letter)
+    width, height = letter
+    p.setFont("Helvetica", 12)
 
-    # Specify the directory for saving the QR code image
-    qr_directory = os.path.join(settings.BASE_DIR, 'qrcodes')
+    # Define padding and border parameters
+    padding = 40
+    border_radius = 20
+    border_size = 1
+    border_color = colors.black
+    line_color = colors.grey
 
-    # Create the directory if it doesn't exist
-    os.makedirs(qr_directory, exist_ok=True)
+    # Draw a rounded rectangle background
+    p.setStrokeColor(border_color)
+    p.setLineWidth(border_size)
+    p.roundRect(
+        padding, height - 750, width - 2 * padding,
+        700, border_radius, fill=False, stroke=True)
 
-    # Save the QR code image
-    qr_filename = os.path.join(qr_directory, f'qr_{ticket_number}.png')
+    # Event name and venue
+    p.setFont("Helvetica-Bold", 16)
+    p.setFillColorRGB(0, 0, 0)
+    p.drawString(padding + 30, height - 80, event.name)
+    p.setFont("Helvetica", 12)
+    p.setFillColor(line_color)
+    p.drawString(
+        padding + 30, height - 100,
+        f"{event.venue}, {event.location}")
 
-    img.save(qr_filename)
+    # Draw a line
+    p.setStrokeColor(line_color)
+    p.line(padding + 30, height - 110, width - padding - 30, height - 110)
 
-    # Creating PDF instance, setting properties, and generating the PDF
-    pdf = PDF("P", "mm", "A4")
-    pdf.set_first_name(first_name)
-    pdf.set_last_name(last_name)
-    pdf.set_ticket_number(ticket_number)
-    pdf.alias_nb_pages()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.add_page()
+    # Personal details
+    y = height - 140
+    p.setFillColorRGB(0, 0, 0)
 
-    pdf.image(qr_filename, x=3, y=10, w=66)
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Name")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, f"{first_name} {last_name}")
 
-    # Save the PDF content to a variable
-    pdf_output = pdf.output()
-    return pdf_output
+    y -= 30
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Email")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, email)
+
+    y -= 30
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Phone Number")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, phone_number)
+
+    # Draw another line
+    p.line(padding + 30, y - 20, width - padding - 30, y - 20)
+
+    y -= 40
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Paid")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, f"Ksh {amount}")
+
+    y -= 30
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "No ticket(s)")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, str(num_tickets))
+
+    y -= 30
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Ticket type")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, ticket_type)
+
+    y -= 30
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Ticket Number")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, ticket.ticket_number[:8])
+
+    # Draw another line
+    p.line(padding + 30, y - 20, width - padding - 30, y - 20)
+
+    # Event details
+    y -= 50
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 30, y, "Date")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 110, y, event.date.strftime("%Y-%m-%d"))
+
+    p.setFont("Helvetica", 10)
+    p.drawString(padding + 300, y, "Time")
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(padding + 370, y, f"{event.start_time} - {event.end_time}")
+
+    y -= 80
+    p.setFont("Helvetica", 10)
+    p.setFillColor(line_color)
+    p.drawCentredString(width // 2, y, "Show the QR Code at the entrance")
+
+    # QR Code
+    generate_qr(ticket_url, ticket)
+    if ticket.qr:
+        p.drawImage(
+            ticket.qr.path, width // 2 - 125,
+            y - 270, width=250, height=250)
+
+    # Finalize the PDF
+    p.showPage()
+    p.save()
+
+    # Save the PDF to the `pdf_ticket` field
+    pdf_buffer.seek(0)
+    ticket.pdf_ticket.save(
+        f'ticket_{ticket.ticket_number}.pdf', File(pdf_buffer), save=False)
