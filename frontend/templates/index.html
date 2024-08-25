@@ -5,7 +5,10 @@
         <div class="row justify-content-center mt-5">
             <div class="col-sm-12 col-lg-6">
                 <h1 class="fw-bold mt-4 text-white text-center">Welcome to Tkiti Zetu!</h1>
-                <input type="text" name="search" id="search" class="form-control form-control-lg" placeholder="Search event, concert & festival">
+                <form action="{% url 'search_events' %}" method="GET" class="d-flex flex-column flex-sm-row w-100 gap-2">
+                    <input type="search" name="q" id="search" class="form-control form-control-lg" placeholder="Search event, concert & festival" required>
+                    <input type="submit" value="Search" class="btn btn-light px-4"/>
+                </form>
             </div>
         </div>
     </header>
