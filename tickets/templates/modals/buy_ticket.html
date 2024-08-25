@@ -1,0 +1,109 @@
+<div class="modal fade" id="buyTicketModal" tabindex="-1" aria-labelledby="buyTicketModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow p-3"  style="border-radius: 18px;">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-between">
+                        <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-ticket me-2"></i> Buy {{ event.name }} Ticket</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-lg-8 col-lg-12">
+                            <form method="POST" action="{% url 'new_ticket' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="event" value="{{ event.id }}">
+                            <input type="hidden" name="amount" value="50000">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                                <label for="first_name">First Name</label>
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                                <label for="last_name">Last Name</label>
+                            </div>
+                            <div class="form-floating">
+                                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                <label for="first_name">Email</label>
+                            </div>
+                            <div class="form-floating my-3">
+                                <input type="tel" class="form-control" name="phone_number" placeholder="Phone Number" required>
+                                <label for="phone_number">Phone Number</label>
+                            </div>
+                            <select class="form-select form-select-lg mb-4" name="num_tickets" aria-label="Select number of ticket(s)" required>
+                                <option selected value="">Select number of ticket(s)</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                                <option value="4">Four</option>
+                                <option value="5">Five</option>
+                                <option value="10">Ten</option>
+                                <option value="15">Fifteen</option>
+                                <option value="20">Twenty</option>
+                            </select>
+                            <hr class="text-muted">
+                            <div class="btn btn-primary w-100 btn-lg rounded-3" data-bs-toggle="modal" data-bs-target="#bankModal">Pay now <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="bankModal" tabindex="-1" aria-labelledby="bankModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow p-2"  style="border-radius: 18px;">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-between">
+                        <h5 class="modal-title" id="bankModalLabel"><i class="fa-solid fa-bank me-2"></i> Bank</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-lg-8 col-lg-12">
+                            <div class="form-floating">
+                                <input type="num" class="form-control" name="card_number" placeholder="Card Number">
+                                <label for="card_number">Card Number</label>
+                            </div>
+                            <div class="row justify-content-between align-items-center my-3">
+                                <div class="col-7">
+                                    <h6 class="fw-bold">CVV Number</h6>
+                                    <small class="small text-muted">Enter the 3 or 4 digit number on the card</small>
+                                </div>
+                                <div class="col-5">
+                                    <div class="form-floating">
+                                        <input type="num" class="form-control" name="cvv_number" placeholder="CVV Number">
+                                        <label for="cvv_number">CVV Number</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-7">
+                                    <h6 class="fw-bold">Expiry date</h6>
+                                    <small class="small text-muted">Enter the expiration date of the card</small>
+                                </div>
+                                <div class="col-5">
+                                    <div class="form-floating">
+                                        <input type="num" class="form-control" name="expiry_date" placeholder="Expiry date">
+                                        <label for="expiry_date">Expiry date</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-floating mt-3">
+                                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                                <label for="password">Password</label>
+                            </div>
+                            <hr class="text-muted">
+                            <div class="d-flex gap-3 flex-row align-items-center justify-content-between">
+                                <div class="btn w-100 btn-outline-secondary btn-lg rounded-3" data-bs-toggle="modal" data-bs-target="#buyTicketModal">Back</div>
+                                <button class="btn w-100 btn-primary btn-lg rounded-3" type="submit">Buy now <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-8 col-lg-12">
+            <form method="POST" action="{% url 'new_ticket' %}">
+                {% csrf_token %}
+                <input type="hidden" name="event" value="{{ event.id }}">
+                <input type="hidden" name="amount" value="3000">
+                <div class="form-floating">
+                    <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                    <label for="first_name">First Name</label>
+                </div>
+                <div class="form-floating my-3">
+                    <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                    <label for="last_name">Last Name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    <label for="first_name">Email</label>
+                </div>
+                <div class="form-floating my-3">
+                    <input type="tel" class="form-control" name="phone_number" placeholder="Phone Number" required>
+                    <label for="phone_number">Phone Number</label>
+                </div>
+                <div class="form-floating my-3">
+                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    <label for="first_name">Email</label>
+                </div>
+                <select class="form-select mb-3" name="num_tickets" aria-label="Select number of ticket(s)" required>
+                    <option selected value="">Select number of ticket(s)</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">Four</option>
+                    <option value="5">Five</option>
+                    <option value="10">Ten</option>
+                    <option value="15">Fifteen</option>
+                    <option value="20">Twenty</option>
+                </select>
+                <button class="btn btn-primary w-100 btn-lg">Pay now</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
