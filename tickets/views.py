@@ -1,15 +1,10 @@
 from tickets.models import Ticket
-from .forms import TicketForm
 from events.models import Event
-
-from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 import uuid
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 from django.http import HttpResponse
-from .utils import generate_pdf_ticket
-# from .email import send_email_with_inline_logo
+from .utils import generate_qr, generate_pdf
 
 
 def view_ticket(request, pk, ticket_number):
@@ -24,36 +19,56 @@ def view_ticket(request, pk, ticket_number):
 
 
 def new_ticket(request):
-    # Initialize the form with or without POST data
-    new_ticket_form = TicketForm(request.POST or None)
-
     if request.method == 'POST':
-        if new_ticket_form.is_valid():
+        event_id = request.POST.get('event')
+        event = Event.objects.get(id=event_id)
 
-            # Assigning the event signup instance with a ticket number
-            new_ticket = new_ticket_form.save(commit=False)
-            # Function to generate ticket number
-            new_ticket.ticket_number = generate_ticket_number()
-            new_ticket.save()
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        amount = request.POST.get('amount')
+        num_tickets = request.POST.get('num_tickets')
+        ticket_type = str("Regular")
 
-            # Extract information for logging and email
-            first_name = new_ticket.first_name
+        # Create the ticket instance
+        ticket = Ticket(
+            event=event,
+            ticket_number=generate_ticket_number(),
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            email=email,
+            amount=amount,
+            num_tickets=num_tickets,
+        )
 
-            # Display success message
-            messages.success(
-                request, f"{first_name} was successfully added!")
-            return redirect('event_signup_portal')
+        # Save the ticket initially to generate the ID and ticket_number
+        ticket.save()
 
-    context = {
-        'new_ticket_form': new_ticket_form,
-    }
+        # Generate the ticket URL
+        ticket_url = request.build_absolute_uri(
+            reverse('view_ticket', args=[ticket.pk, ticket.ticket_number])
+        )
 
-    # Render the template
-    return render(request, 'event_signup.html', context)
+        # Generate QR Code containing the ticket URL
+        generate_qr(ticket_url, ticket)
+        ticket.save()
+        generate_pdf(
+            ticket_url, event, ticket, first_name, last_name,
+            email, phone_number, amount, num_tickets, ticket_type
+        )
+
+        # Save the updated ticket with QR and PDF
+        ticket.save()
+
+        return redirect('view_ticket', event.pk, ticket.ticket_number)
+
+    return render(request, 'new_ticket.html')
 
 
 def generate_ticket_number():
-    return str(uuid.uuid4())[:6]
+    return str(uuid.uuid4())
 
 
 def qr_scan_view(request, ticket_number):
@@ -61,11 +76,3 @@ def qr_scan_view(request, ticket_number):
     ticket.scan_count += 1
     ticket.save()
     return HttpResponse(f"Ticket {ticket.ticket_number} has been scanned {ticket.scan_count} times.")
-
-
-def download_ticket(request, first_name, last_name, ticket_number, event_name, event_date):
-    pdf_content = generate_pdf_ticket(
-        first_name, last_name, ticket_number, event_name, event_date)
-    response = HttpResponse(pdf_content, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="ticket_{ticket_number}.pdf"'
-    return response
