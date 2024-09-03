@@ -24,7 +24,7 @@ def search_function(request):
             messages.info(request, "No results")
             results = []
 
-        num_results = results.count()
+        num_results = len(results)
 
         search_context = {
             "events": results,
