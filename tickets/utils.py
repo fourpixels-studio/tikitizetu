@@ -17,7 +17,7 @@ def generate_qr(ticket_url, ticket):
     ticket.qr.save(f'qr_{ticket.ticket_number}.png', File(qr_io), save=False)
 
 
-def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_number, amount, num_tickets, ticket_type):
+def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_number, amount, ticket_type):
     """
     Generate a PDF for the given ticket with a layout similar to the provided HTML.
     """
@@ -83,12 +83,6 @@ def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_
     p.drawString(padding + 30, y, "Paid")
     p.setFont("Helvetica-Bold", 12)
     p.drawString(padding + 110, y, f"Ksh {amount}")
-
-    y -= 30
-    p.setFont("Helvetica", 10)
-    p.drawString(padding + 30, y, "No ticket(s)")
-    p.setFont("Helvetica-Bold", 12)
-    p.drawString(padding + 110, y, str(num_tickets))
 
     y -= 30
     p.setFont("Helvetica", 10)
