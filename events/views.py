@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Event
+from .models import Event, TicketCategory
 
 
 def events_list(request):
@@ -10,12 +10,13 @@ def events_list(request):
     return render(request, "events_list.html", context)
 
 
-def event_detail(request, pk):
+def event_detail(request, slug, pk):
     event = get_object_or_404(Event, pk=pk)
     context = {
         "title_tag": event.name,
         "event": event,
         "upcoming_events": Event.objects.order_by("-pk"),
+        "ticket_categories": TicketCategory.objects.all(),
     }
     return render(request, "event_detail.html", context)
 
