@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from .utils import generate_qr, generate_pdf
 
 
-def view_ticket(request, pk, ticket_number):
+def view_ticket(request, slug, ticket_number, pk):
     ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
     event = ticket.get_event
     context = {
@@ -27,44 +27,55 @@ def new_ticket(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         phone_number = request.POST.get('phone_number')
+        ticket_type = request.POST.get('ticket_type')
         amount = request.POST.get('amount')
-        num_tickets = request.POST.get('num_tickets')
-        ticket_type = str("Regular")
 
-        # Create the ticket instance
-        ticket = Ticket(
-            event=event,
-            ticket_number=generate_ticket_number(),
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            email=email,
-            amount=amount,
-            num_tickets=num_tickets,
-        )
+        card_number = request.POST.get('card_number')
+        cvc_number = request.POST.get('cvc_number')
+        expiry_date = request.POST.get('expiry_date')
 
-        # Save the ticket initially to generate the ID and ticket_number
-        ticket.save()
+        payment_success = process_the_payment(
+            card_number, cvc_number,
+            expiry_date, amount
 
-        # Generate the ticket URL
-        ticket_url = request.build_absolute_uri(
-            reverse('view_ticket', args=[ticket.pk, ticket.ticket_number])
-        )
+        if payment_success:
+            # Create the ticket instance
+            ticket = Ticket(
+                event=event,
+                ticket_number=generate_ticket_number(),
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone_number=phone_number,
+                ticket_type=ticket_type,
+                amount=amount,
+            )
 
-        # Generate QR Code containing the ticket URL
-        generate_qr(ticket_url, ticket)
-        ticket.save()
-        generate_pdf(
-            ticket_url, event, ticket, first_name, last_name,
-            email, phone_number, amount, num_tickets, ticket_type
-        )
+            # Save the ticket initially to generate the ID and ticket_number
+            ticket.save()
 
-        # Save the updated ticket with QR and PDF
-        ticket.save()
+            # Generate the ticket URL
+            ticket_url = request.build_absolute_uri(
+                reverse('view_ticket', args=[
+                        event.slug, ticket.ticket_number, event.pk])
+            )
 
-        return redirect('view_ticket', event.pk, ticket.ticket_number)
+            # Generate QR Code containing the ticket URL
+            generate_qr(ticket_url, ticket)
+            ticket.save()
 
-    return render(request, 'new_ticket.html')
+            generate_pdf(
+                ticket_url, event, ticket, first_name, last_name,
+                email, phone_number, amount, ticket_type
+            )
+
+            # Save the updated ticket with QR and PDF
+            ticket.save()
+
+            return redirect('view_ticket', event.slug, ticket.ticket_number, event.pk)
+        else:
+            messages.error(request, "Payment failed. Please try again.")
+            return redirect('event_detail', event_id=event.pk)
 
 
 def generate_ticket_number():
