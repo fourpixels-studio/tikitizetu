@@ -1,0 +1,34 @@
+<div class="modal fade" id="shareEvent" tabindex="-1" aria-labelledby="shareEventLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow p-2"  style="border-radius: 18px;">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-between">
+                        <h5 class="modal-title" id="shareEventLabel"><i class="fa-solid fa-share me-2"></i> Share event</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="row justify-content-center align-items-center">
+                        <p>Copy the link below to share the event on social media:</p>
+                        <div class="col-lg-8 col-lg-12">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="eventShareLink" value="{{ event.get_share_link }}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
+                            </div>
+                            <div class="d-flex justify-content-between flex-row gap-3 mt-3">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ event.get_share_link }}" target="_blank" class="btn btn-secondary w-100">
+                                    <i class="fab fa-facebook-f"></i> Facebook
+                                </a>
+                                <a href="https://twitter.com/intent/tweet?url={{ event.get_share_link }}&text=Check out this event!" target="_blank" class="w-100 btn btn-secondary">
+                                    <i class="fab fa-twitter"></i> Twitter
+                                </a>
+                                <a href="https://wa.me/?text={{ event.get_share_link }}" target="_blank" class="w-100 btn btn-secondary">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
