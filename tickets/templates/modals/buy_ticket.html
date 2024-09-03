@@ -1,47 +1,47 @@
+{% load custom_filters %}
 <div class="modal fade" id="buyTicketModal" tabindex="-1" aria-labelledby="buyTicketModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow p-3"  style="border-radius: 18px;">
+        <div class="modal-content border-0 shadow p-0 p-lg-2"  style="border-radius: 18px;">
             <div class="modal-body">
                 <div class="container">
-                    <div class="d-flex mb-3 flex-row align-items-center justify-content-between">
-                        <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-ticket me-2"></i> Buy {{ event.name }} Ticket</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex mb-3 gap-3 flex-row align-items-center justify-content-between">
+                        <div>
+                            <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-user me-2"></i>Enter your details</h5>
+                            <small class="text-muted fw-400">Provide your contact information. This will be used to send your ticket and will appear on it.</small>
+                        </div>
+                        <div class="border pt-1 px-1 pb-0 rounded-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <hr class="text-muted">
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-center">
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 1</div>
+                        <div class="col text-center text-muted fw-300">Step 2</div>
+                        <div class="col text-center text-muted fw-300">Step 3</div>
                     </div>
                     <div class="row justify-content-center align-items-center">
                         <div class="col-lg-8 col-lg-12">
                             <form method="POST" action="{% url 'new_ticket' %}">
                             {% csrf_token %}
                             <input type="hidden" name="event" value="{{ event.id }}">
-                            <input type="hidden" name="amount" value="50000">
                             <div class="form-floating">
-                                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                                <input type="text" class="rounded-4 form-control" name="first_name" placeholder="First Name" required>
                                 <label for="first_name">First Name</label>
                             </div>
                             <div class="form-floating my-3">
-                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                                <input type="text" class="rounded-4 form-control" name="last_name" placeholder="Last Name" required>
                                 <label for="last_name">Last Name</label>
                             </div>
                             <div class="form-floating">
-                                <input type="email" class="form-control" name="email" placeholder="Email" required>
-                                <label for="first_name">Email</label>
+                                <input type="email" class="rounded-4 form-control" name="email" placeholder="Email" required>
+                                <label for="email">Email</label>
                             </div>
                             <div class="form-floating my-3">
-                                <input type="tel" class="form-control" name="phone_number" placeholder="Phone Number" required>
+                                <input type="tel" class="rounded-4 form-control" name="phone_number" placeholder="Phone Number" required>
                                 <label for="phone_number">Phone Number</label>
                             </div>
-                            <select class="form-select form-select-lg mb-4" name="num_tickets" aria-label="Select number of ticket(s)" required>
-                                <option selected value="">Select number of ticket(s)</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                                <option value="4">Four</option>
-                                <option value="5">Five</option>
-                                <option value="10">Ten</option>
-                                <option value="15">Fifteen</option>
-                                <option value="20">Twenty</option>
-                            </select>
                             <hr class="text-muted">
-                            <div class="btn btn-primary w-100 btn-lg rounded-3" data-bs-toggle="modal" data-bs-target="#bankModal">Pay now <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
+                            <div class="btn btn-primary w-100 btn-lg rounded-4" data-bs-toggle="modal" data-bs-target="#ticketTypeModal">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
                         </div>
                     </div>
                 </div>
@@ -51,53 +51,113 @@
 </div>
 
 
-<div class="modal fade" id="bankModal" tabindex="-1" aria-labelledby="bankModalLabel" aria-hidden="true">
+<div class="modal fade" id="ticketTypeModal" tabindex="-1" aria-labelledby="ticketTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow p-2"  style="border-radius: 18px;">
+        <div class="modal-content border-0 shadow p-0 p-lg-2"  style="border-radius: 18px;">
             <div class="modal-body">
                 <div class="container">
-                    <div class="d-flex mb-3 flex-row align-items-center justify-content-between">
-                        <h5 class="modal-title" id="bankModalLabel"><i class="fa-solid fa-bank me-2"></i> Bank</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex gap-3 flex-row align-items-center justify-content-between">
+                        <div>
+                            <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-ticket me-2"></i>Select Your Ticket Type</h5>
+                            <small class="text-muted fw-400">Choose the ticket category that best suits you. Prices may vary.</small>
+                        </div>
+                        <div class="border pt-1 px-1 pb-0 rounded-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <hr class="text-muted">
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-center">
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 1</div>
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 2</div>
+                        <div class="col text-center text-muted fw-300">Step 3</div>
                     </div>
                     <div class="row justify-content-center align-items-center">
                         <div class="col-lg-8 col-lg-12">
+                            <div class="d-flex flex-row flex-wrap gap-2">
+                                <input type="hidden" name="amount" id="ticketAmount" value="">
+                                {% for category in ticket_categories %}
+                                <input type="num" name="amount" value="{{ category.price }}" style="display: none;">
+                                <div class="border rounded-4 p-2">
+                                    <div class="d-flex flex-row align-items-center gap-3 px-3 hover">
+                                        <input class="form-check-input hover" type="radio" name="ticket_type" id="ticket_type{{ category.pk }}" value="{{ category.get_category_name_display }}" data-price="{{ category.price }}" required>
+                                        <div>
+                                            <h6 class="my-0 fw-300 hover">{{ category.get_category_name_display }}</h6>
+                                            <p class="my-0 fw-600">Ksh {{ category.price|custom_intcomma }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <hr class="text-muted">
+                            <div class="d-flex gap-3 flex-row align-items-center justify-content-between">
+                                <div class="btn w-100 btn-outline-secondary btn-lg rounded-4" data-bs-toggle="modal" data-bs-target="#buyTicketModal">Back</div>
+                                <div class="btn btn-primary w-100 btn-lg rounded-4" data-bs-toggle="modal" data-bs-target="#bankModal">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="bankModal" tabindex="-1" aria-labelledby="bankModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow p-0 p-lg-2"  style="border-radius: 18px;">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="d-flex mb-3 gap-3 flex-row align-items-center justify-content-between">
+                        <div>
+                            <h5 class="modal-title" id="bankModalLabel"><i class="fa-solid fa-bank me-2"></i> Enter Payment Details</h5>
+                            <small class="text-muted fw-400">Provide your card information to complete the purchase.</small>
+                        </div>
+                        <div class="border pt-1 px-1 pb-0 rounded-3">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3 flex-row align-items-center justify-content-center">
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 1</div>
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 2</div>
+                        <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 3</div>
+                    </div>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-lg-8 col-lg-12">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="card_name" placeholder="Name on card" required>
+                                <label for="card_name">Name on card</label>
+                            </div>
                             <div class="form-floating">
-                                <input type="num" class="form-control" name="card_number" placeholder="Card Number">
+                                <input type="num" class="form-control" name="card_number" placeholder="Card Number" required>
                                 <label for="card_number">Card Number</label>
                             </div>
                             <div class="row justify-content-between align-items-center my-3">
-                                <div class="col-7">
+                                <div class="col-8">
                                     <h6 class="fw-bold">CVV Number</h6>
                                     <small class="small text-muted">Enter the 3 or 4 digit number on the card</small>
                                 </div>
-                                <div class="col-5">
+                                <div class="col-4">
                                     <div class="form-floating">
-                                        <input type="num" class="form-control" name="cvv_number" placeholder="CVV Number">
-                                        <label for="cvv_number">CVV Number</label>
+                                        <input type="password" class="form-control" name="cvc_number" placeholder="CVV Number" required>
+                                        <label for="cvc_number">CVV Number</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row justify-content-between align-items-center">
-                                <div class="col-7">
+                                <div class="col-8">
                                     <h6 class="fw-bold">Expiry date</h6>
                                     <small class="small text-muted">Enter the expiration date of the card</small>
                                 </div>
-                                <div class="col-5">
+                                <div class="col-4">
                                     <div class="form-floating">
-                                        <input type="num" class="form-control" name="expiry_date" placeholder="Expiry date">
+                                        <input type="num" class="form-control" name="expiry_date" placeholder="Expiry date" required>
                                         <label for="expiry_date">Expiry date</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-floating mt-3">
-                                <input type="password" class="form-control" name="password" placeholder="Password" required>
-                                <label for="password">Password</label>
-                            </div>
                             <hr class="text-muted">
                             <div class="d-flex gap-3 flex-row align-items-center justify-content-between">
-                                <div class="btn w-100 btn-outline-secondary btn-lg rounded-3" data-bs-toggle="modal" data-bs-target="#buyTicketModal">Back</div>
-                                <button class="btn w-100 btn-primary btn-lg rounded-3" type="submit">Buy now <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></button>
+                                <div class="btn w-100 btn-outline-secondary btn-lg rounded-4" data-bs-toggle="modal" data-bs-target="#ticketTypeModal">Back</div>
+                                <button class="btn w-100 btn-primary btn-lg rounded-4" type="submit">Buy now <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></button>
                             </div>
                             </form>
                         </div>
@@ -107,3 +167,15 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ticketTypeInputs = document.querySelectorAll('input[name="ticket_type"]');
+        const ticketAmountInput = document.getElementById('ticketAmount');
+
+        ticketTypeInputs.forEach(function (input) {
+            input.addEventListener('change', function () {
+                ticketAmountInput.value = input.getAttribute('data-price');
+            });
+        });
+    });
+</script>
