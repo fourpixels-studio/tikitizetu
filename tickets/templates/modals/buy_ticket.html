@@ -5,10 +5,7 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="d-flex mb-3 gap-3 flex-row align-items-center justify-content-between">
-                        <div>
-                            <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-user me-2"></i>Enter your details</h5>
-                            <small class="text-muted fw-400">Provide your contact information. This will be used to send your ticket and will appear on it.</small>
-                        </div>
+                        <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-user me-2"></i>Enter your details</h5>
                         <div class="border pt-1 px-1 pb-0 rounded-3">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -20,6 +17,7 @@
                         <div class="col text-center text-muted fw-300">Step 3</div>
                     </div>
                     <div class="row justify-content-center align-items-center">
+                        <small class="text-muted mb-3 fw-400">Provide your contact information. This will be used to send your ticket and will appear on it.</small>
                         <div class="col-lg-8 col-lg-12">
                             <form method="POST" action="{% url 'new_ticket' %}">
                             {% csrf_token %}
@@ -57,10 +55,7 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="d-flex gap-3 flex-row align-items-center justify-content-between">
-                        <div>
-                            <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-ticket me-2"></i>Select Your Ticket Type</h5>
-                            <small class="text-muted fw-400">Choose the ticket category that best suits you. Prices may vary.</small>
-                        </div>
+                        <h5 class="modal-title" id="buyTicketModalLabel"><i class="fa-solid fa-ticket me-2"></i>Select Your Ticket Type</h5>
                         <div class="border pt-1 px-1 pb-0 rounded-3">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -72,11 +67,11 @@
                         <div class="col text-center text-muted fw-300">Step 3</div>
                     </div>
                     <div class="row justify-content-center align-items-center">
+                        <small class="text-muted mb-3 fw-400">Choose the ticket category that best suits you. Prices may vary.</small>
                         <div class="col-lg-8 col-lg-12">
                             <div class="d-flex flex-row flex-wrap gap-2">
                                 <input type="hidden" name="amount" id="ticketAmount" value="">
-                                {% for category in ticket_categories %}
-                                <input type="num" name="amount" value="{{ category.price }}" style="display: none;">
+                                {% for category in event.get_ticket_categories %}
                                 <div class="border rounded-4 p-2">
                                     <div class="d-flex flex-row align-items-center gap-3 px-3 hover">
                                         <input class="form-check-input hover" type="radio" name="ticket_type" id="ticket_type{{ category.pk }}" value="{{ category.get_category_name_display }}" data-price="{{ category.price }}" required>
@@ -107,10 +102,7 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="d-flex mb-3 gap-3 flex-row align-items-center justify-content-between">
-                        <div>
-                            <h5 class="modal-title" id="bankModalLabel"><i class="fa-solid fa-bank me-2"></i> Enter Payment Details</h5>
-                            <small class="text-muted fw-400">Provide your card information to complete the purchase.</small>
-                        </div>
+                        <h5 class="modal-title" id="bankModalLabel"><i class="fa-solid fa-bank me-2"></i> Enter Payment Details</h5>
                         <div class="border pt-1 px-1 pb-0 rounded-3">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -121,6 +113,7 @@
                         <div class="col text-center text-dark fw-500 border-bottom pb-2 border-dark">Step 3</div>
                     </div>
                     <div class="row justify-content-center align-items-center">
+                        <small class="text-muted mb-3 fw-400">Provide your card information to complete the purchase.</small>
                         <div class="col-lg-8 col-lg-12">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" name="card_name" placeholder="Name on card" required>
