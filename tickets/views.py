@@ -5,7 +5,7 @@ from django.urls import reverse
 import uuid
 from django.http import HttpResponse
 from .utils import generate_qr, generate_pdf
-
+from .email import send_ticket_email
 
 def view_ticket(request, slug, ticket_number, pk):
     ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
@@ -71,6 +71,7 @@ def new_ticket(request):
 
             # Save the updated ticket with QR and PDF
             ticket.save()
+            send_ticket_email(ticket, event)
 
             return redirect('view_ticket', event.slug, ticket.ticket_number, event.pk)
         else:
