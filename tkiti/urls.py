@@ -26,10 +26,6 @@ urlpatterns = [
     path("events/", include("events.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Configure admin titles
-admin.site.site_header = "DJ G400 Admin"
+admin.site.site_header = "Tikiti Zetu Admin"
 
-# Tab/Site Title
-admin.site.site_header = "DJ G400"
-
-admin.site.index_title = "DJ G400 - Admin"
+admin.site.index_title = "Tikiti Zetu - Admin"
