@@ -28,7 +28,13 @@ class Event(models.Model):
         current_site = settings.SITE_DOMAIN
         event_url = self.get_url
         return f"{current_site}{event_url}"
-
+        
+    @property
+    def get_ticket_categories(self):
+        if TicketCategory.objects.filter(event=self).exists():
+            return TicketCategory.objects.filter(event=self)
+        return None
+        
     @property
     def get_url(self):
         return reverse("event_detail", kwargs={
