@@ -4,6 +4,18 @@
     margin: 0;
     padding: 0;
 }
+.mustard{
+    color: #ffc857;
+}
+.primary{
+    color: #1f2041;
+}
+.primary-hover{
+    color: #45477e;
+}
+.disabled{
+    color: #888be1;
+}
 html {
     scroll-behavior: smooth;
     font-size: 15px;
@@ -72,4 +84,74 @@ html {
 }
 .fw-700{
     font-weight: 700;
+}
+.add-ticket{
+    background-color: rgb(112, 183, 112);
+    padding-left: .8rem;
+    padding-right: .8rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    color: #fff;
+    border-radius: 50px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border: none;
+}
+.remove-ticket{
+    align-items: center;
+    padding-left: .9rem;
+    padding-right: .9rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    justify-content: center;
+    display: flex;
+    background-color: rgb(226, 94, 94);
+    color: #fff;
+    border-radius: 50px;
+    border: none;
+}
+.quantity{
+    font-size: 1.5rem;
+}
+.bg-muted{
+    background-color: #626262bf;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
+.is-invalid {
+    border-color: red;
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+    color: red;
+}
+.bg-grey{
+    background-color: #c8c8c8bf;
+}
+.text-grey{
+    color: #c8c8c8bf;
+}
+.rounded-2{
+    border-radius: 8px !important;
+}
+.rounded-3{
+    border-radius: 12px !important;
+}
+.rounded-4{
+    border-radius: 20px !important;
+}
+.rounded-5{
+    border-radius: 24px !important;
+}
+.rounded-pill{
+    border-radius: 28px !important;
+}
+.small{
+    font-size: .6rem;
 }
