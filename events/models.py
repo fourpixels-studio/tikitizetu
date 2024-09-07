@@ -67,6 +67,7 @@ class TicketCategory(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_tickets = models.IntegerField(default=0)
     tickets_sold = models.IntegerField(default=0)
+    admits = models.CharField(max_length=35, blank=True, null=True)
 
     def __str__(self):
         return f"{self.get_category_name_display()} - {self.event.name}"
