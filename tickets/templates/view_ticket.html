@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
-{% load static %}
 {% load custom_filters %}
-<div class="container px-4 p-lg-0">
+<div class="container px-4 mb-5 p-lg-0">
     <div class="row justify-content-center align-items-start my-2">
         <div class="col-sm-12 col-lg-5">
             <div class="text-center mb-4 mt-3">
@@ -10,52 +9,41 @@
                 <h1 class="fw-300 mt-3 text-center">Your purchase is successful.</h1>
                 <p class="text-muted text-center">You can download your E-Ticket as a PDF</p>
             </div>
-            <div class="rounded-4 border bg-light px-4 py-4">
-                <div class="d-flex flex-row justify-content-between align-items-start">
-                    <i class="fa-solid fa-ticket fa-2xl" style="margin-top: .5rem;"></i>
-                    <div class="dropdown">
-                        <button class="dropdown-toggle no-btn" type="button" id="ticketDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        </button>
-                            <ul class="dropdown-menu" aria-labelledby="ticketDropdown">
-                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#shareEvent">Share event</button></li>
-                                <li><a class="dropdown-item" href="#">Get location</a></li>
-                            </ul>
-                    </div>
-                </div>
-                <h3 class="mt-4 mb-0">{{ event.name }}</h3>
+            <div class="rounded-4 border bg-white px-4 py-4">
+                <h3 class="mb-0">{{ event.name }}</h3>
                 <p class="text-muted"><i class="fa-solid fa-location-dot me-2"></i> {{ event.venue }}, {{ event.location }}</p>
                 <hr class="text-muted">
                 <div class="d-flex flex-wrap justify-content-betwwen align-items-start">
                     <div class="col-6">
-                        <p class="small my-0 text-muted fw-300">First Name</p>
-                        <h5>{{ ticket.first_name }}</h5>
-                    </div>
-                    <div class="col-6">
-                        <p class="small my-0 text-muted fw-300">Last Name</p>
-                        <h5>{{ ticket.last_name }}</h5>
-                    </div>
-                    <div class="col-12 my-3">
-                        <p class="small my-0 text-muted fw-300">Email</p>
-                        <h5>{{ ticket.email }}</h5>
+                        <p class="small my-0 text-muted fw-300">Name</p>
+                        <h5>{{ ticket.first_name }} {{ ticket.last_name }}</h5>
                     </div>
                     <div class="col-6">
                         <p class="small my-0 text-muted fw-300">Phone Number</p>
-                        <h5>{{ ticket.phone_number }}</h5>
+                        <h5>{{ ticket.get_phone_number }}</h5>
                     </div>
-                    <div class="col-6">
-                        <p class="small my-0 text-muted fw-300">Paid</p>
-                        <h5>Ksh {{ ticket.amount|custom_intcomma }}</h5>
+                    <div class="col-12 mt-3">
+                        <p class="small my-0 text-muted fw-300">Email</p>
+                        <h5>{{ ticket.get_email }}</h5>
                     </div>
                 </div>
                 <hr class="text-muted">
                 <div class="d-flex mt-4 flex-wrap justify-content-betwwen align-items-start">
                     <div class="col-6">
+                        <p class="small mb-0 text-muted fw-300">Ticket type</p>
+                        <h5>{{ ticket.ticket_type }}</h5>
+                    </div>
+                    <div class="col-6">
+                        <p class="small my-0 text-muted fw-300">Ticket(s)</p>
+                        <h5>{{ ticket.num_tickets }}</h5>
+                    </div>
+                    <div class="col-6">
                         <p class="small mb-0 text-muted fw-300">Ticket Number</p>
                         <h5>{{ ticket.ticket_number|slice:8 }}</h5>
                     </div>
                     <div class="col-6">
-                        <p class="small mb-0 text-muted fw-300">Ticket type</p>
-                        <h5>{{ ticket.ticket_type }}</h5>
+                        <p class="small my-0 text-muted fw-300">Paid</p>
+                        <h5>Ksh {{ ticket.amount|custom_intcomma }}</h5>
                     </div>
                 </div>
                 <hr class="text-muted">
