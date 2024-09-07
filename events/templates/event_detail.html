@@ -32,7 +32,7 @@
         </div>
         <div class="row justify-content-center mt-3 mb-5">
             <div class="col-sm-12 col-lg-4">
-                <button data-bs-toggle="modal" data-bs-target="#buyTicketModal" type="button" class="btn btn-primary w-100 btn-lg rounded-pill py-3 px-5">Buy ticket</button>
+                <a href="{% url 'cart' event.slug event.pk %}" class="btn btn-primary w-100 btn-lg rounded-pill py-3 px-5">Buy ticket</a>
             </div>
         </div>
         {% if event.map %}
@@ -42,7 +42,9 @@
                 <div class="col-12">
                     <div class="text-center">
                         <h3 class="mb-4">Exact map location</h3>
-                        {{ event.map|safe }}
+                        <div class="map-container" style="width: 100%; max-width: 100%; height: auto;">
+                            {{ event.map|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
