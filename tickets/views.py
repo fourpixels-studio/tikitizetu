@@ -5,7 +5,10 @@ from django.urls import reverse
 import uuid
 from django.http import HttpResponse
 from .utils import generate_qr, generate_pdf
+from payments.views import process_bank_payment
+from django.contrib import messages
 from .email import send_ticket_email
+
 
 def view_ticket(request, slug, ticket_number, pk):
     ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
@@ -29,15 +32,17 @@ def new_ticket(request):
         phone_number = request.POST.get('phone_number')
         ticket_type = request.POST.get('ticket_type')
         amount = request.POST.get('amount')
+        num_tickets = request.POST.get('num_tickets')
 
+        # Payment processing (using a payment gateway)
         card_number = request.POST.get('card_number')
         cvc_number = request.POST.get('cvc_number')
         expiry_date = request.POST.get('expiry_date')
 
-        payment_success = process_the_payment(
+        payment_success = process_bank_payment(
             card_number, cvc_number,
             expiry_date, amount
-
+        )
         if payment_success:
             # Create the ticket instance
             ticket = Ticket(
@@ -48,6 +53,7 @@ def new_ticket(request):
                 email=email,
                 phone_number=phone_number,
                 ticket_type=ticket_type,
+                num_tickets=num_tickets,
                 amount=amount,
             )
 
@@ -56,8 +62,10 @@ def new_ticket(request):
 
             # Generate the ticket URL
             ticket_url = request.build_absolute_uri(
-                reverse('view_ticket', args=[
-                        event.slug, ticket.ticket_number, event.pk])
+                reverse(
+                    'view_ticket', args=[
+                        event.slug, ticket.ticket_number, event.pk
+                    ])
             )
 
             # Generate QR Code containing the ticket URL
@@ -76,7 +84,7 @@ def new_ticket(request):
             return redirect('view_ticket', event.slug, ticket.ticket_number, event.pk)
         else:
             messages.error(request, "Payment failed. Please try again.")
-            return redirect('event_detail', event_id=event.pk)
+            return redirect('cart', slug=event.slug, pk=event.pk)
 
 
 def generate_ticket_number():
