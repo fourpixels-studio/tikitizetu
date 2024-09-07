@@ -5,41 +5,38 @@
     </div>
     <div style="background-color: #fff; padding: 20px; border-radius: 8px;">
         <h1 style="margin-bottom: 10px;">{{ event.name }}</h1>
-        <p style="color: #999;"><i class="fa-solid fa-location-dot"></i> {{ event.venue }}, {{ event.location }}</p>
+        <p style="color: #999;">{{ event.venue }}, {{ event.location }}</p>
         <hr style="border-color: #ddd;">
         <div style="display: flex; justify-content: space-between; align-items: start;">
             <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">First Name</p>
-                <h2>{{ ticket.first_name }}</h2>
+                <p style="color: #999; margin: 0;">Name</p>
+                <h2>{{ ticket.first_name }} {{ ticket.last_name }}</h2>
             </div>
             <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Last Name</p>
-                <h2>{{ ticket.last_name }}</h2>
+                <p style="color: #999; margin: 0;">Phone Number</p>
+                <h2>{{ ticket.get_phone_number }}</h2>
             </div>
         </div>
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 15px;">
             <p style="color: #999; margin: 0;">Email</p>
-            <h3>{{ ticket.email }}</h3>
+            <h3>{{ ticket.get_email }}</h3>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: start; margin-top: 20px;">
             <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Phone Number</p>
-                <h3>{{ ticket.phone_number }}</h3>
+                <p style="color: #999; margin: 0;">Ticket Type</p>
+                <h3>{{ ticket.ticket_type }}</h3>
+            </div>
+            <div style="width: 48%;">
+                <p style="color: #999; margin: 0;">Ticket(s)</p>
+                <h3>Ksh {{ ticket.num_tickets }}</h3>
+            </div>
+            <div style="width: 48%;">
+                <p style="color: #999; margin: 0;">Ticket Number</p>
+                <h3>{{ ticket.ticket_number|slice:8 }}</h3>
             </div>
             <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Paid</p>
                 <h3>Ksh {{ ticket.amount }}</h3>
-            </div>
-        </div>
-        <hr style="border-color: #ddd;">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Ticket Number</p>
-                <h4>{{ ticket.ticket_number|slice:8 }}</h4>
-            </div>
-            <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Ticket type</p>
-                <h4>{{ ticket.ticket_type }}</h4>
             </div>
         </div>
         <hr style="border-color: #ddd;">
