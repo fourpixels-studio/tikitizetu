@@ -11,7 +11,9 @@ class Ticket(models.Model):
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     ticket_type = models.CharField(max_length=30, blank=True, null=True)
-    amount = models.CharField(max_length=5)
+    num_tickets = models.CharField(
+        max_length=20, default=1, null=True, blank=True)
+    amount = models.CharField(max_length=5, default=0)
     qr = models.FileField(upload_to='qrcodes/', blank=True, null=True)
     pdf_ticket = models.FileField(
         upload_to='tickets/', max_length=100, null=True, blank=True)
@@ -21,6 +23,18 @@ class Ticket(models.Model):
         if self.event:
             return self.event
         return None
+
+    @property
+    def get_phone_number(self):
+        if self.phone_number:
+            return self.phone_number
+        return "None"
+
+    @property
+    def get_email(self):
+        if self.email:
+            return self.email
+        return "None"
 
     @property
     def get_url(self):
