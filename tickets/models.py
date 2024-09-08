@@ -10,6 +10,7 @@ class Ticket(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
+    paid = models.BooleanField(default=False, blank=True, null=True)
     ticket_type = models.CharField(max_length=30, blank=True, null=True)
     num_tickets = models.CharField(
         max_length=20, default=1, null=True, blank=True)
@@ -17,6 +18,8 @@ class Ticket(models.Model):
     qr = models.FileField(upload_to='qrcodes/', blank=True, null=True)
     pdf_ticket = models.FileField(
         upload_to='tickets/', max_length=100, null=True, blank=True)
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=70, blank=True, null=True)
 
     @property
     def get_event(self):
