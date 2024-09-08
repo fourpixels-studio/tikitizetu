@@ -33,6 +33,7 @@ def new_ticket(request):
         ticket_type = request.POST.get('ticket_type')
         amount = request.POST.get('amount')
         num_tickets = request.POST.get('num_tickets')
+        ticket_number = generate_ticket_number()
 
         # Payment processing (using a payment gateway)
         card_number = request.POST.get('card_number')
@@ -47,7 +48,7 @@ def new_ticket(request):
             # Create the ticket instance
             ticket = Ticket(
                 event=event,
-                ticket_number=generate_ticket_number(),
+                ticket_number=ticket_number,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -55,6 +56,9 @@ def new_ticket(request):
                 ticket_type=ticket_type,
                 num_tickets=num_tickets,
                 amount=amount,
+                paid=True,
+                status="Paid",
+                transaction_id="TXN" + str(uuid.uuid4()),
             )
 
             # Save the ticket initially to generate the ID and ticket_number
