@@ -25,6 +25,7 @@ urlpatterns = [
     path("ticket/", include("tickets.urls")),
     path("events/", include("events.urls")),
     path("cart/", include("cart.urls")),
+    path("", include("payments.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Tikiti Zetu Admin"
