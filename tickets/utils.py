@@ -15,7 +15,6 @@ def generate_qr(ticket_url, ticket):
     qr.save(qr_io, format='PNG')
     qr_io.seek(0)
     ticket.qr.save(f'qr_{ticket.ticket_number}.png', File(qr_io), save=False)
-    print(f"QR code saved for ticket {ticket.ticket_number}")
 
 
 def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_number, amount, ticket_type):
