@@ -1,5 +1,4 @@
 from .models import Event
-from django.contrib import messages
 from django.db.models import Q
 
 
@@ -21,7 +20,6 @@ def search_function(request):
             ).distinct()
 
         else:
-            messages.info(request, "No results")
             results = []
 
         num_results = len(results)
