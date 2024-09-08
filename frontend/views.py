@@ -8,3 +8,10 @@ def index(request):
         "events": Event.objects.order_by("-pk"),
     }
     return render(request, "index.html", context)
+
+
+def contact(request):
+    context = {
+        "title_tag": "Contact",
+    }
+    return render(request, "contact.html", context)
