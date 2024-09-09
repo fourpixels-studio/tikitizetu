@@ -160,3 +160,21 @@ html {
     background-color: #f8d7da;
     border-color: #f8d7da;
 }
+.display-1{
+    font-size: 5rem !important;
+}
+.display-2{
+    font-size: 4.5rem !important;
+}
+.display-3{
+    font-size: 4rem !important;
+}
+.display-4{
+    font-size: 3.5rem !important;
+}
+.display-5{
+    font-size: 3rem !important;
+}
+.display-6{
+    font-size: 2.5rem !important;
+}
