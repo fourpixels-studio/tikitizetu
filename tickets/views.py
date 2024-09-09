@@ -87,7 +87,7 @@ def new_ticket(request):
 
             return redirect('view_ticket', event.slug, ticket.ticket_number, event.pk)
         else:
-            messages.error(request, "Payment failed. Please try again.")
+            messages.error(request, "Payment failed because of an invalid card number. Please ensure you entered the correct number and try again.")
             return redirect('cart', slug=event.slug, pk=event.pk)
 
 
