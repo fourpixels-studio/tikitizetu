@@ -186,7 +186,7 @@
                                     <label for="card_name">Name on card</label>
                                 </div>
                                 <div class="form-floating">
-                                    <input type="num" class="form-control" name="card_number" placeholder="Card Number">
+                                    <input id="card_number" placeholder="0000 0000 0000 0000" type="text" class="form-control" name="card_number" minlength="19" maxlength="19" size="19">
                                     <label for="card_number">Card Number</label>
                                 </div>
                                 <div class="row justify-content-between align-items-center my-3">
@@ -196,19 +196,20 @@
                                     </div>
                                     <div class="col-4">
                                         <div class="form-floating">
-                                            <input type="password" class="form-control" name="cvc_number" placeholder="CVV Number">
+                                            <input type="password" class="form-control" name="cvc_number" id="cvc_number" placeholder="CVV Number" minlength="3" maxlength="4">
                                             <label for="cvc_number">CVV Number</label>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row justify-content-between align-items-center">
                                     <div class="col-8">
-                                        <h6 class="fw-bold">Expiry date</h6>
-                                        <small class="small text-muted">Enter the expiration date of the card</small>
+                                        <h6 class="fw-bold">Expiry Date</h6>
+                                        <small class="small text-muted">Enter the expiration date of the card (MM/YY)</small>
                                     </div>
                                     <div class="col-4">
                                         <div class="form-floating">
-                                            <input type="num" class="form-control" name="expiry_date" placeholder="Expiry date">
+                                            <input type="text" class="form-control" name="expiry_date" id="expiry_date" placeholder="Expiry date" maxlength="5">
                                             <label for="expiry_date">Expiry date</label>
                                         </div>
                                     </div>
@@ -234,4 +235,5 @@
 <script src="{% static 'js/ticketPurchaseForm.js' %}"></script>
 <script src="{% static 'js/ticketQuantity.js' %}"></script>
 <script src="{% static 'js/showSpinner.js' %}"></script>
+<script src="{% static 'js/cardValidation.js' %}"></script>
 {% endblock %}
