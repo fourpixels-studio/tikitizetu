@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+<main class="container">
+    <div class="row justify-content-center gy-4 mb-5 mt-4 align-items-center">
+        <div class="col-sm-12 col-lg-5 text-center">
+            <h1 style="font-size: 10rem;" class="fw-700">404</h1>
+            <p class="lead">Something went wrong!</p>
+            <a href="{% url 'events_list' %}" class="mt-4 btn btn-primary btn-lg rounded-4 px-5">Back to events</a>
+        </div>
+        <div class="col-sm-12 col-lg-7">
+            <img src="{% static 'undraw_questions_re_1fy7.svg' %}" alt="Error 404 image" class="img-fluid">
+        </div>
+    </div>
+</main>
+{% endblock %}
