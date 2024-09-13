@@ -100,3 +100,75 @@ def qr_scan_view(request, ticket_number):
     ticket.scan_count += 1
     ticket.save()
     return HttpResponse(f"Ticket {ticket.ticket_number} has been scanned {ticket.scan_count} times.")
+
+
+def purchase_ticket(request):
+    if request.method == 'POST':
+        event_id = request.POST.get('event')
+        event = Event.objects.get(id=event_id)
+
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        ticket_type = request.POST.get('ticket_type')
+        amount = request.POST.get('amount')
+        num_tickets = request.POST.get('num_tickets')
+        ticket_number = generate_ticket_number()
+
+        transaction_id = "TXN" + str(uuid.uuid4())
+
+        # Create the ticket instance (not saved yet, just to pass the data)
+        ticket = Ticket(
+            event=event,
+            ticket_number=ticket_number,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone_number=phone_number,
+            ticket_type=ticket_type,
+            num_tickets=num_tickets,
+            amount=amount,
+            paid=False,
+            status="Pending",
+            transaction_id=transaction_id,
+        )
+
+        # Initiate Pesapal payment
+        pesapal = PesaPal()
+        payment_response = pesapal.submit_order(
+            amount, ticket, first_name, last_name, email, phone_number)
+
+        if payment_response['status'] == 'PENDING':
+            ticket.status = 'Pending'
+            ticket.save()
+            # Redirect user to Pesapal payment page
+            return redirect(payment_response['redirect_url'])
+        elif payment_response['status'] == 'COMPLETED':
+            # Successful payment
+            ticket.paid = True
+            ticket.status = 'Paid'
+            ticket.save()
+
+            # Generate ticket URL
+            ticket_url = request.build_absolute_uri(
+                reverse('view_ticket', args=[
+                        ticket.event.slug, ticket.ticket_number, ticket.event.pk])
+            )
+
+            # Generate QR code and PDF
+            generate_qr(ticket_url, ticket)
+            generate_pdf(
+                ticket_url, ticket.event, ticket, first_name,
+                last_name, email, phone_number, amount, ticket_type)
+
+            # Send email with ticket
+            send_ticket_email(ticket, ticket.event)
+
+            return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
+        else:
+            # Payment failed
+            ticket.status = 'Payment Failed'
+            ticket.save()
+            messages.error(request, "Payment Failed! Please try again.")
+            return redirect('pesapal_payment_failed')
