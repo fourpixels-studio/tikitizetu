@@ -7,7 +7,7 @@
             <div class="text-center mb-4 mt-3">
                 <i style="font-size: 4rem;" class="fa-regular fa-circle-check text-success"></i>
                 <h1 class="fw-300 mt-3 text-center">Your purchase is successful.</h1>
-                <p class="text-muted text-center">You can download your E-Ticket as a PDF</p>
+                <p class="text-muted text-center"><span><a href="{{ ticket.pdf_ticket.url }}" download class="text-primary">Download</a></span> my E-Ticket as a PDF</p>
             </div>
             <div class="rounded-4 border bg-white px-4 py-4">
                 <h3 class="mb-0">{{ event.name }}</h3>
@@ -63,10 +63,7 @@
                     <img src="{{ ticket.qr.url }}" alt="" style="height: 230px; width: auto; object-fit: cover" class="img-fluid">
                 </div>
             </div>
-            <div class="d-flex flex-row gap-4 align-items-center gap-2 mt-3">
-                <a href="{{ event.get_url }}" class="btn btn-outline-secondary w-100 rounded-4 btn-lg">See event details</a>
-                <a href="{{ ticket.pdf_ticket.url }}" download class="btn btn-primary w-100 rounded-4 btn-lg">Download ticket</a>
-            </div>
+            <a href="{{ event.get_url }}" class="btn mt-3 btn-primary w-100 rounded-4 btn-lg">See event details</a>
         </div>
     </div>
 </div>
