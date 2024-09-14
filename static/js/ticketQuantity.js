@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalElem = row.querySelector('.category-total');
             grandTotal += parseFloat(totalElem.textContent);
         });
-        amountInput.value = grandTotal;
+        amountInput.value = Math.round(grandTotal);
         // Update the grand total display without decimals
         grandTotalElem.textContent = Math.round(grandTotal);
     }
