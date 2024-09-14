@@ -1,7 +1,10 @@
-from .card_validation import validate_card_number
+from django.shortcuts import render
+from tickets.models import Ticket
 
-def process_bank_payment(card_number, cvc_number, expiry_date, amount):
-    if validate_card_number(card_number):
-        return True
-    else:
-        return False
+
+def pesapal_payment_failed(request, ticket_number):
+    context = {
+        "title_tag": "Payment Failed!",
+        "ticket": Ticket.objects.get(ticket_number=ticket_number),
+    }
+    return render(request, "pesapal/pesapal_payment_failed.html", context)
