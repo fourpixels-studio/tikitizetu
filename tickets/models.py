@@ -6,6 +6,7 @@ from django.urls import reverse
 class Ticket(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     ticket_number = models.CharField(max_length=100, unique=True)
+    order_tracking_id = models.CharField(max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(blank=True, null=True)
