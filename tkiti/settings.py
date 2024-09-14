@@ -168,3 +168,8 @@ LOGGING = {
         },
     },
 }
+SITE_DOMAIN = "https://www.tikitizetu.com"
+
+PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
+PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
+
