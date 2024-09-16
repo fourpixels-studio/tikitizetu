@@ -51,6 +51,7 @@ def purchase_ticket(request):
     if request.method == 'POST':
         event_id = request.POST.get('event')
         event = Event.objects.get(id=event_id)
+        payment_method = request.POST.get('payment_method')
 
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -78,29 +79,88 @@ def purchase_ticket(request):
         )
 
         description = f'Payment for "{event.name[:23]}" ticket'
+        event_slug = event.slug
+        event_pk = event.pk
+        display_name = f"{ticket_type} Ticket for {event.name}"
 
-        pesapal = PesaPal()
-        try:
-            payment_response = pesapal.submit_order(
-                transaction_id, amount, description, phone_number, email,
-                first_name, last_name, ticket_number, event.slug, event_id
-            )
+        if payment_method == 'safaricom':
+            try:
+                safaricom = Safaricom()
+                phone_number = format_phone_number(phone_number)
+                payment_response = safaricom.initiate_stk_push(
+                    amount, phone_number, display_name
+                )
+                if payment_response:
+                    if payment_method.status_code == 200:
+                        data = payment_response.json()
+                        checkout_request_id = data["CheckoutRequestID"]
+                        return JsonResponse({"CheckoutRequestId": checkout_request_id})
+                else:
+                    ticket.status = "Payment initiation failed"
+                    ticket.save()
+                    return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
 
-            if 'redirect_url' in payment_response:
-                ticket.save()
-                return redirect(payment_response['redirect_url'])
-            else:
-                messages.error(
-                    request, "Invalid payment response. Missing redirect URL.")
-                ticket.status = "Missing redirect URL"
+            except Exception as e:
+                ticket.status = f"Payment initiation failed: {str(e)}"
                 ticket.save()
                 return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
-        except KeyError as e:
-            messages.error(request, f"Payment initiation failed: {str(e)}")
-            ticket.status = f"Payment initiation failed: {str(e)}"
-            ticket.save()
+
+        elif payment_method == 'pesapal':
+            try:
+                pesapal = PesaPal()
+                payment_response = pesapal.submit_order(
+                    transaction_id, amount, description, phone_number, email,
+                    first_name, last_name, ticket_number, event_slug, event_pk
+                )
+
+                if 'redirect_url' in payment_response:
+                    ticket.save()
+                    return redirect(payment_response['redirect_url'])
+                else:
+                    ticket.status = "Missing redirect URL"
+                    ticket.save()
+                    return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+            except KeyError as e:
+                messages.error(request, f"Payment initiation failed: {str(e)}")
+                ticket.status = f"Payment initiation failed: {str(e)}"
+                ticket.save()
+                return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+        else:
             return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+    return HttpResponse("Invalid request method", status=400)
 
 
 def generate_ticket_number():
     return str(uuid.uuid4())
+
+
+
+
+def format_phone_number(phone_number):
+    # Remove any spaces or non-numeric characters like '+'
+    phone_number = phone_number.strip().replace(" ", "").replace("+", "")
+
+    # If the number starts with '07', replace it with '2547'
+    if phone_number.startswith("07"):
+        phone_number = "254" + phone_number[1:]
+
+    # If the number starts with '01', replace it with '2547'
+    elif phone_number.startswith("01"):
+        phone_number = "254" + phone_number[1:]
+
+    # If the number starts with '7', assume it's missing the '254' and add it
+    elif phone_number.startswith("7"):
+        phone_number = "254" + phone_number
+
+    # If the number starts with '1', assume it's missing the '254' and add it
+    elif phone_number.startswith("1"):
+        phone_number = "254" + phone_number
+
+    # If the number starts with '254', it's already in the correct format
+    elif phone_number.startswith("254"):
+        pass
+    else:
+        # Handle other cases (e.g., invalid numbers)
+        raise ValueError("Invalid phone number format")
+
+    return phone_number
