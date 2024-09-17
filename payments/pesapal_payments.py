@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from tickets.models import Ticket
+from django.contrib import messages
+import requests
 
 
 @sensitive_variables('PESAPAL_CONSUMER_KEY', 'PESAPAL_CONSUMER_SECRET')
@@ -56,7 +58,7 @@ class PesaPal:
         endpoint = "Transactions/SubmitOrderRequest"
 
         callback_url = f'https://www.tikitizetu.com/ticket/{event_slug}/{ticket_number}/{event_id}/'
-        cancellation_url = f'https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}/'
+        cancellation_url = f'https://www.tikitizetu.com/payment-failed/{ticket_number}/'
 
         payload = json.dumps({
             "id": transaction_id,
@@ -174,3 +176,30 @@ def pesapal_payment_ipn(request):
         return HttpResponse("Invalid IPN request", status=400)
 
     return HttpResponse(status=405)
+
+
+def process_pesapal_payment(
+        transaction_id, amount, description, phone_number, email,
+        first_name, last_name, ticket_number, event_slug, event_id, ticket, request):
+
+    pesapal = PesaPal()
+    try:
+        payment_response = pesapal.submit_order(
+            transaction_id, amount, description, phone_number, email,
+            first_name, last_name, ticket_number, event_slug, event_id
+        )
+
+        if 'redirect_url' in payment_response:
+            ticket.save()
+            return redirect(payment_response['redirect_url'])
+        else:
+            messages.error(
+                request, "Invalid payment response. Missing redirect URL.")
+            ticket.status = "Missing redirect URL"
+            ticket.save()
+            return redirect(f"https://www.tikitizetu.com/payment-failed/{ticket_number}")
+    except KeyError as e:
+        messages.error(request, f"Payment initiation failed: {str(e)}")
+        ticket.status = f"Payment initiation failed: {str(e)}"
+        ticket.save()
+        return redirect(f"https://www.tikitizetu.com/payment-failed/{ticket_number}")
