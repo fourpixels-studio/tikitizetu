@@ -7,6 +7,9 @@ class Ticket(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     ticket_number = models.CharField(max_length=100, unique=True)
     order_tracking_id = models.CharField(max_length=100, null=True, blank=True)
+    mpesa_code = models.CharField(max_length=20, null=True, blank=True)
+    checkout_request_id = models.CharField(
+        max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(blank=True, null=True)
@@ -20,6 +23,7 @@ class Ticket(models.Model):
     pdf_ticket = models.FileField(
         upload_to='tickets/', max_length=100, null=True, blank=True)
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_date = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=70, blank=True, null=True)
 
     @property
