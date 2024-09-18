@@ -22,19 +22,19 @@
             <h3>{{ ticket.get_email }}</h3>
         </div>
         <div style="display: flex; justify-content: space-between; align-items: start; margin-top: 20px;">
-            <div style="width: 48%;">
+            <div style="width: 24%;">
                 <p style="color: #999; margin: 0;">Ticket Type</p>
                 <h3>{{ ticket.ticket_type }}</h3>
             </div>
-            <div style="width: 48%;">
+            <div style="width: 24%;">
                 <p style="color: #999; margin: 0;">Ticket(s)</p>
                 <h3>{{ ticket.num_tickets }}</h3>
             </div>
-            <div style="width: 48%;">
+            <div style="width: 24%;">
                 <p style="color: #999; margin: 0;">Ticket Number</p>
                 <h3>{{ ticket.ticket_number|slice:8 }}</h3>
             </div>
-            <div style="width: 48%;">
+            <div style="width: 24%;">
                 <p style="color: #999; margin: 0;">Paid</p>
                 <h3>Ksh {{ ticket.amount }}</h3>
             </div>
