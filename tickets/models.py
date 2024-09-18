@@ -25,6 +25,7 @@ class Ticket(models.Model):
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
     payment_date = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=70, blank=True, null=True)
+    payment_mode = models.CharField(max_length=20, blank=True, null=True)
 
     @property
     def get_event(self):
@@ -52,5 +53,19 @@ class Ticket(models.Model):
             "event_id": self.event.pk,
         })
 
+    @property
+    def get_payment_method(self):
+        if self.payment_mode:
+            if self.payment_mode == 'pesapal':
+                payment_mode = "Pesapal"
+            else:
+                payment_mode = "M-Pesa"
+            return payment_mode
+        return "None"
+
     def __str__(self):
-        return f"{self.first_name} {self.last_name}'s ticket | {self.ticket_number} | Event: {self.event}"
+        if self.paid:
+            status = f"Paid via {self.get_payment_method}"
+        else:
+            status = f"NOT PAID: {self.status}"
+        return f"{self.first_name} {self.last_name}'s ticket | Status: {status}"
