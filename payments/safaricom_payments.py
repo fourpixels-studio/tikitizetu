@@ -12,7 +12,6 @@ from tickets.email import send_ticket_email
 import json
 import logging
 from django.http import JsonResponse
-from django.shortcuts import redirect
 
 
 logger = logging.getLogger('django')
@@ -143,9 +142,8 @@ def safaricom_payment_callback(request):
     if request.method == "POST":
         try:
             # Safaricom will send the callback data as JSON in the request body
-            callback_data = json.loads(request.body.decode('utf-8'))
+            callback_data = json.loads(request.body)
 
-            # Process the callback data (sample structure shown below)
             body = callback_data.get('Body', {})
             stk_callback = body.get('stkCallback', {})
             result_code = stk_callback.get('ResultCode')
@@ -175,7 +173,8 @@ def safaricom_payment_callback(request):
 
             # Check if the payment was successful
             if result_code == 0:
-                ticket = Ticket.objects.get(mpesa_code=mpesa_code)
+                ticket = Ticket.objects.get(
+                    checkout_request_id=checkout_request_id)
                 ticket.paid = True
                 ticket.status = 'Paid'
                 ticket.mpesa_code = mpesa_code
@@ -183,27 +182,8 @@ def safaricom_payment_callback(request):
                 ticket.phone_number = phone_number
                 ticket.payment_date = payment_date
                 ticket.save()
-                ticket_url = request.build_absolute_uri(reverse(
-                    'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
-                ticket.save()
-                generate_qr(ticket_url, ticket)
-                ticket.save()
-                generate_pdf(
-                    ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
-                    ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
-                )
-                ticket.save()
-                send_ticket_email(ticket, ticket.event)
-                ticket.save()
 
-                response_data = {
-                    "status": "success",
-                    "event_slug": ticket.event.slug,
-                    "ticket_number": ticket.ticket_number,
-                    "event_pk": ticket.event.pk
-                }
-
-                return JsonResponse(response_data)
+                JsonResponse({"status": "success"})
             else:
                 # Handle failed payment case
                 ticket = Ticket.objects.get(
@@ -216,7 +196,8 @@ def safaricom_payment_callback(request):
                 return JsonResponse({"status": "failed", "message": result_desc})
 
         except Exception as e:
-            logger.error(f"Error processing the callback: {e}")
+            logger.error(
+                f"Error processing the callback: {e}")
     return JsonResponse({"ResultCode": 0, "ResultDesc": "Received Successfully"})
 
 
@@ -225,9 +206,8 @@ def safaricom_payment_validation(request):
     if request.method == "POST":
         try:
             # Safaricom will send the callback data as JSON in the request body
-            callback_data = json.loads(request.body.decode('utf-8'))
+            callback_data = json.loads(request.body)
 
-            # Process the callback data (sample structure shown below)
             body = callback_data.get('Body', {})
             stk_callback = body.get('stkCallback', {})
             result_code = stk_callback.get('ResultCode')
@@ -257,7 +237,8 @@ def safaricom_payment_validation(request):
 
             # Check if the payment was successful
             if result_code == 0:
-                ticket = Ticket.objects.get(mpesa_code=mpesa_code)
+                ticket = Ticket.objects.get(
+                    checkout_request_id=checkout_request_id)
                 ticket.paid = True
                 ticket.status = 'Paid'
                 ticket.mpesa_code = mpesa_code
@@ -265,28 +246,8 @@ def safaricom_payment_validation(request):
                 ticket.phone_number = phone_number
                 ticket.payment_date = payment_date
                 ticket.save()
-                ticket_url = request.build_absolute_uri(reverse(
-                    'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
-                ticket.save()
-                generate_qr(ticket_url, ticket)
-                ticket.save()
 
-                generate_pdf(
-                    ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
-                    ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
-                )
-                ticket.save()
-                send_ticket_email(ticket, ticket.event)
-                ticket.save()
-
-                response_data = {
-                    "status": "success",
-                    "event_slug": ticket.event.slug,
-                    "ticket_number": ticket.ticket_number,
-                    "event_pk": ticket.event.pk
-                }
-
-                return JsonResponse(response_data)
+                JsonResponse({"status": "success"})
             else:
                 # Handle failed payment case
                 ticket = Ticket.objects.get(
@@ -312,22 +273,36 @@ def safaricom_processing_payment(request, ticket_number):
                 "title_tag": "Processing your Payment.",
                 'ticket_number': ticket_number,
             }
-            return render(request, "safaricom/processing_payment.html", context)
+            if ticket.paid:
+                ticket_url = request.build_absolute_uri(reverse(
+                    'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
+                ticket.save()
+
+                generate_qr(ticket_url, ticket)
+                ticket.save()
+
+                generate_pdf(
+                    ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
+                    ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
+                )
+                ticket.save()
+
+                send_ticket_email(ticket, ticket.event)
+                return JsonResponse({"status": "success"})
+            else:
+                return render(request, "safaricom/processing_payment.html", context)
     except Ticket.DoesNotExist:
         return JsonResponse({"status": "invalid method"}, status=400)
 
 
 @csrf_exempt
 def safaricom_check_payment_status(request, ticket_number):
-    ticket_number = request.session.get('ticket_number')
-
-    if ticket_number:
-        try:
-            ticket = Ticket.objects.get(ticket_number=ticket_number)
-            if ticket.paid:
-                return JsonResponse({'status': 'success'})
-            else:
-                return JsonResponse({'status': 'pending'})
-        except Ticket.DoesNotExist:
-            return JsonResponse({'status': 'failed', 'message': 'Ticket not found'})
-    return JsonResponse({'status': 'failed', 'message': 'No ticket number provided'})
+    try:
+        ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
+        if ticket.paid:
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'pending'})
+    except Ticket.DoesNotExist:
+        logger.info("status failed message Ticket not found")
+        return JsonResponse({'status': 'failed', 'message': 'Ticket not found'})
