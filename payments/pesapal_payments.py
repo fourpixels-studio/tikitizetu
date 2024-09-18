@@ -1,14 +1,16 @@
-import time
-import requests
 import json
-from django.views.decorators.debug import sensitive_variables
+import time
+import logging
+import requests
 from django.conf import settings
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
 from tickets.models import Ticket
 from django.contrib import messages
-import requests
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.debug import sensitive_variables
+
+logger = logging.getLogger('django')
 
 
 @sensitive_variables('PESAPAL_CONSUMER_KEY', 'PESAPAL_CONSUMER_SECRET')
@@ -36,7 +38,7 @@ class PesaPal:
 
     def registerIPN_URL(self):
         endpoint = "URLSetup/RegisterIPN"
-        myIPN_url = 'https://www.tikitizetu.com/pesapal/payment-callback/'
+        myIPN_url = f'{settings.SITE_DOMAIN}pesapal/payment-callback/'
 
         payload = json.dumps({
             "url": myIPN_url,
@@ -57,8 +59,8 @@ class PesaPal:
     def submit_order(self, transaction_id, amount, description, phone_number, email, first_name, last_name, ticket_number, event_slug, event_id):
         endpoint = "Transactions/SubmitOrderRequest"
 
-        callback_url = f'https://www.tikitizetu.com/ticket/{event_slug}/{ticket_number}/{event_id}/'
-        cancellation_url = f'https://www.tikitizetu.com/payment-failed/{ticket_number}/'
+        callback_url = f'{settings.SITE_DOMAIN}ticket/{event_slug}/{ticket_number}/{event_id}/'
+        cancellation_url = f'{settings.SITE_DOMAIN}payment-failed/{ticket_number}/'
 
         payload = json.dumps({
             "id": transaction_id,
@@ -183,6 +185,7 @@ def process_pesapal_payment(
         first_name, last_name, ticket_number, event_slug, event_id, ticket, request):
 
     pesapal = PesaPal()
+    ticket = Ticket.objects.get(ticket_number=ticket_number)
     try:
         payment_response = pesapal.submit_order(
             transaction_id, amount, description, phone_number, email,
@@ -195,11 +198,12 @@ def process_pesapal_payment(
         else:
             messages.error(
                 request, "Invalid payment response. Missing redirect URL.")
-            ticket.status = "Missing redirect URL"
+            ticket.status = "Invalid payment response. Missing redirect URL."
+            logger.info(f"Invalid payment response. Missing redirect URL.")
             ticket.save()
-            return redirect(f"https://www.tikitizetu.com/payment-failed/{ticket_number}")
-    except KeyError as e:
-        messages.error(request, f"Payment initiation failed: {str(e)}")
-        ticket.status = f"Payment initiation failed: {str(e)}"
+            return redirect('payment_failed', ticket.ticket_number)
+    except:
+        logger.info("Payment initiation failed")
+        ticket.status = "Payment initiation failed"
         ticket.save()
-        return redirect(f"https://www.tikitizetu.com/payment-failed/{ticket_number}")
+        return redirect('payment_failed', ticket.ticket_number)
