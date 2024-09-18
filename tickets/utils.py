@@ -73,7 +73,7 @@ def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_
     p.setFont("Helvetica", 10)
     p.drawString(padding + 30, y, "Phone Number")
     p.setFont("Helvetica-Bold", 12)
-    p.drawString(padding + 110, y, phone_number)
+    p.drawString(padding + 110, y, ticket.phone_number)
 
     # Draw another line
     p.line(padding + 30, y - 20, width - padding - 30, y - 20)
@@ -117,7 +117,6 @@ def generate_pdf(ticket_url, event, ticket, first_name, last_name, email, phone_
     p.drawCentredString(width // 2, y, "Show the QR Code at the entrance")
 
     # QR Code
-    generate_qr(ticket_url, ticket)
     if ticket.qr and ticket.qr.path:
         p.drawImage(
             ticket.qr.path, width // 2 - 125,
