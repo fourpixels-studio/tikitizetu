@@ -1,57 +1,31 @@
 import uuid
+import logging
 from events.models import Event
 from tickets.models import Ticket
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import HttpResponse
 from payments.pesapal_payments import PesaPal
-from tickets.utils import generate_pdf, generate_qr
-from tickets.email import send_ticket_email
-from django.urls import reverse
+from payments.safaricom_payments import Safaricom
+from django.shortcuts import render, redirect, get_object_or_404
+
+logger = logging.getLogger('django')
 
 
 def view_ticket(request, slug, ticket_number, pk):
     ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
-    if ticket.paid:
-        context = {
-            "title_tag": f"Your {ticket.event.name} Ticket",
-            "ticket": ticket,
-            "event": ticket.event,
-        }
-        return render(request, "view_ticket.html", context)
-    else:
-        order_tracking_id = None
-        try:
-            order_tracking_id = request.GET.get('OrderTrackingId')
-        except:
-            order_tracking_id = request.GET.get('order_tracking_id')
-
-        ticket.paid = True
-        ticket.status = 'Paid'
-        ticket.order_tracking_id = order_tracking_id
-        ticket.save()
-
-        ticket_url = request.build_absolute_uri(reverse(
-            'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
-        ticket.save()
-
-        generate_qr(ticket_url, ticket)
-        ticket.save()
-
-        generate_pdf(
-            ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
-            ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
-        )
-        ticket.save()
-
-        send_ticket_email(ticket, ticket.event)
-        return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
+    context = {
+        "title_tag": f"Your {ticket.event.name} Ticket",
+        "ticket": ticket,
+        "event": ticket.event,
+    }
+    return render(request, "view_ticket.html", context)
 
 
 def purchase_ticket(request):
     if request.method == 'POST':
         event_id = request.POST.get('event')
-        event = Event.objects.get(id=event_id)
         payment_method = request.POST.get('payment_method')
+        event = Event.objects.get(id=event_id)
 
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -76,6 +50,7 @@ def purchase_ticket(request):
             paid=False,
             status="Pending",
             transaction_id=transaction_id,
+            payment_mode=payment_method,
         )
 
         description = f'Payment for "{event.name[:23]}" ticket'
@@ -91,19 +66,23 @@ def purchase_ticket(request):
                     amount, phone_number, display_name
                 )
                 if payment_response:
-                    if payment_method.status_code == 200:
-                        data = payment_response.json()
-                        checkout_request_id = data["CheckoutRequestID"]
-                        return JsonResponse({"CheckoutRequestId": checkout_request_id})
-                else:
-                    ticket.status = "Payment initiation failed"
+                    checkout_request_id = payment_response["CheckoutRequestID"]
+                    ticket.checkout_request_id = checkout_request_id
+                    ticket.status = "Awaiting payment confirmation"
                     ticket.save()
-                    return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+                    return redirect('safaricom_processing_payment', ticket.ticket_number)
+                else:
+                    logger.error(
+                        "No response from safaricom.initiate_stk_push")
+                    ticket.status = "Payment initiation failed inside safaricom payment"
+                    ticket.save()
+                    return redirect('payment_failed', ticket.ticket_number)
 
             except Exception as e:
+                logger.error(f"Payment initiation failed: {str(e)}")
                 ticket.status = f"Payment initiation failed: {str(e)}"
                 ticket.save()
-                return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+                return redirect('payment_failed', ticket.ticket_number)
 
         elif payment_method == 'pesapal':
             try:
@@ -119,21 +98,22 @@ def purchase_ticket(request):
                 else:
                     ticket.status = "Missing redirect URL"
                     ticket.save()
-                    return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+                    return redirect('payment_failed', ticket.ticket_number)
             except KeyError as e:
                 messages.error(request, f"Payment initiation failed: {str(e)}")
                 ticket.status = f"Payment initiation failed: {str(e)}"
                 ticket.save()
-                return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+                return redirect('payment_failed', ticket.ticket_number)
         else:
-            return redirect(f"https://www.tikitizetu.com/ticket/payment-failed/{ticket_number}")
+            ticket.status = "Payment initiation failed outside safaricom payment"
+            messages.error(
+                request, "Payment initiation failed outside safaricom payment")
+            return redirect('payment_failed', ticket.ticket_number)
     return HttpResponse("Invalid request method", status=400)
 
 
 def generate_ticket_number():
     return str(uuid.uuid4())
-
-
 
 
 def format_phone_number(phone_number):
@@ -144,7 +124,7 @@ def format_phone_number(phone_number):
     if phone_number.startswith("07"):
         phone_number = "254" + phone_number[1:]
 
-    # If the number starts with '01', replace it with '2547'
+    # If the number starts with '01', replace it with '2541'
     elif phone_number.startswith("01"):
         phone_number = "254" + phone_number[1:]
 
