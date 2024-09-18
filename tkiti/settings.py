@@ -139,7 +139,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-SITE_DOMAIN = "https://www.tikitizetu.com"
+SITE_DOMAIN = "https://www.tikitizetu.com/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.tikitizetu.com'
@@ -168,8 +168,13 @@ LOGGING = {
         },
     },
 }
-SITE_DOMAIN = "https://www.tikitizetu.com"
 
 PESAPAL_CONSUMER_KEY = os.environ.get('PESAPAL_CONSUMER_KEY')
 PESAPAL_CONSUMER_SECRET = os.environ.get('PESAPAL_CONSUMER_SECRET')
 
+SAFARICOM_CONSUMER_KEY = os.environ.get('SAFARICOM_CONSUMER_KEY')
+SAFARICOM_CONSUMER_SECRET = os.environ.get('SAFARICOM_CONSUMER_SECRET')
+SAFARICOM_SHORTCODE = os.environ.get('SAFARICOM_SHORTCODE')
+SAFARICOM_PASSKEY = os.environ.get('SAFARICOM_PASSKEY')
+SAFARICOM_SHORTCODE = os.environ.get('SAFARICOM_SHORTCODE')
+SAFARICOM_INITIATOR_PASSWORD = os.environ.get('SAFARICOM_INITIATOR_PASSWORD')
