@@ -5,14 +5,10 @@ from datetime import datetime
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from tickets.models import Ticket
-from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
-from tickets.utils import generate_pdf, generate_qr
-from tickets.email import send_ticket_email
+from django.shortcuts import render, get_object_or_404, redirect
 import json
 import logging
 from django.http import JsonResponse
-
 
 logger = logging.getLogger('django')
 
@@ -269,27 +265,13 @@ def safaricom_processing_payment(request, ticket_number):
     try:
         ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
         if ticket:
-            context = {
-                "title_tag": "Processing your Payment.",
-                'ticket_number': ticket_number,
-            }
             if ticket.paid:
-                ticket_url = request.build_absolute_uri(reverse(
-                    'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
-                ticket.save()
-
-                generate_qr(ticket_url, ticket)
-                ticket.save()
-
-                generate_pdf(
-                    ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
-                    ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
-                )
-                ticket.save()
-
-                send_ticket_email(ticket, ticket.event)
-                return JsonResponse({"status": "success"})
+                return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
             else:
+                context = {
+                    "title_tag": "Processing your Payment.",
+                    'ticket_number': ticket_number,
+                }
                 return render(request, "safaricom/processing_payment.html", context)
     except Ticket.DoesNotExist:
         return JsonResponse({"status": "invalid method"}, status=400)
