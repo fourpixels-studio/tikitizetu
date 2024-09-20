@@ -2,14 +2,15 @@
 {% block body %}
 <main class="container">
     <div class="row justify-content-center my-5 py-5 align-items-center">
-        <div class="col-sm-12 col-lg-7 text-center">
+        <div class="col-sm-12 col-lg-6 text-center">
             <i style="font-size: 4rem;" class="fa-regular fa-circle-xmark text-danger"></i>
-            <h1 class="display-3">Payment Failed!</h1>
-            <p class="text-muted">Unfortunately, your payment for the {{ ticket.ticket_type }} Ticket has failed. Please try again or <span><a href="{% url 'contact' %}" class="hover-underline text-primary">contact support</a></span> if the issue persists.</p>
-            <div class="d-flex flex-row mt-4 flex-wrap justify-content-center align-items-center gap-4">
-                <a href="{% url 'events_list' %}" class="link text-secondary">Upcoming Events</a>
-                <a href="{% url 'cart' slug=ticket.event.slug pk=ticket.event.pk %}" class="btn btn-primary px-4 rounded-4">Retry Payment</a>
-            </div>
+            <h1 class="display-3 mb-4">Payment Failed!</h1>
+            <p class="text-muted mb-4">Unfortunately, your payment for the <strong>{{ ticket.event.name }} - {{ ticket.ticket_type}} Ticket</strong> has failed. Please try again or <span><a href="{% url 'contact' %}" class="hover-underline text-primary">contact support</a></span> if the issue persists.</p>
+            <a href="{% url 'cart' slug=ticket.event.slug pk=ticket.event.pk %}" class="btn btn-primary btn-lg px-5 mt-3 rounded-pill text-center">Retry Payment</a>
+            <p class="text-muted fw-300 my-3">Or</p>
+            <span class="text-center text-secondary">Check
+                <a href="{% url 'events_list' %}" class="link">Upcoming Events</a>
+            </span>
         </div>
     </div>
 </main>
