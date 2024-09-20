@@ -3,12 +3,13 @@ import time
 import logging
 import requests
 from django.conf import settings
+from django.utils import timezone
 from tickets.models import Ticket
-from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_variables
+
 
 logger = logging.getLogger('django')
 
@@ -142,9 +143,14 @@ def pesapal_payment_callback(request):
 
             if status == 'Completed':
                 ticket.order_tracking_id = order_tracking_id
+                ticket.status = 'Paid'
+                ticket.paid = True
+                ticket.payment_date = timezone.now()
                 ticket.save()
                 return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
             else:
+                ticket.order_tracking_id = order_tracking_id
+                ticket.paid = False
                 ticket.status = 'Payment Failed (callback invalid)'
                 ticket.save()
                 return redirect('cart', slug=ticket.event.slug, pk=ticket.event.pk)
@@ -170,6 +176,7 @@ def pesapal_payment_ipn(request):
                     ticket.paid = True
                     ticket.status = 'Paid'
                     ticket.order_tracking_id = order_tracking_id
+                    ticket.payment_date = timezone.now()
                     ticket.save()
                     return HttpResponse("IPN handled", status=200)
             except Ticket.DoesNotExist:
@@ -196,8 +203,6 @@ def process_pesapal_payment(
             ticket.save()
             return redirect(payment_response['redirect_url'])
         else:
-            messages.error(
-                request, "Invalid payment response. Missing redirect URL.")
             ticket.status = "Invalid payment response. Missing redirect URL."
             logger.info(f"Invalid payment response. Missing redirect URL.")
             ticket.save()
