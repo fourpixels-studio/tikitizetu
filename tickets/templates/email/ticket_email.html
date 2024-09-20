@@ -1,63 +1,76 @@
 <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; font-family: Arial, sans-serif; background-color: #f9f9f9;">
     <div style="text-align: center;">
         <h1 style="font-weight: 300; margin-top: 20px;">Your purchase is successful.</h1>
-        <p style="color: #999;">You can download your E-Ticket as a PDF</p>
+        <p style="color: #999;">You can validate this ticket by <span><a style="color: #1f2041;" href="{{ ticket_url }}" target="_blank">clicking here</a></span></p>
     </div>
-    <div style="background-color: #fff; padding: 20px; border-radius: 8px;">
-        <h1 style="margin-bottom: 10px;">{{ event.name }}</h1>
-        <p style="color: #999;">{{ event.venue }}, {{ event.location }}</p>
+    <div style="background-color: #fff; padding: 20px; border-radius: 20px;">
+        <h1 style="margin-bottom: 10px;">{{ ticket.event.name }}</h1>
+        <h3 style="color: #5f5f5f; margin-bottom: 1rem">Location: {{ ticket.event.venue }}, {{ ticket.event.location }}</h3>
+        <p style="color: #999; font-size: .9rem">Hosted by {{ ticket.event.host }}, {{ ticket.event.event_description }}</p>
         <hr style="border-color: #ddd;">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Name</p>
-                <h2>{{ ticket.first_name }} {{ ticket.last_name }}</h2>
-            </div>
-            <div style="width: 48%;">
-                <p style="color: #999; margin: 0;">Phone Number</p>
-                <h2>{{ ticket.get_phone_number }}</h2>
-            </div>
+        <div style="margin-top: 15px;">
+            <p style="color: #999; margin: 0;">Name</p>
+            <h2>{{ ticket.get_fullname }}</h2>
+        </div>
+        <div style="margin-top: 15px;">
+            <p style="color: #999; margin: 0;">Phone Number</p>
+            <h2>{{ ticket.get_phone_number }}</h2>
         </div>
         <div style="margin-top: 15px;">
             <p style="color: #999; margin: 0;">Email</p>
             <h3>{{ ticket.get_email }}</h3>
         </div>
+        <hr style="border-color: #ddd; margin-top: 25px">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-top: 20px;">
-            <div style="width: 24%;">
+            <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Ticket Type</p>
                 <h3>{{ ticket.ticket_type }}</h3>
             </div>
-            <div style="width: 24%;">
+            <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Ticket(s)</p>
                 <h3>{{ ticket.num_tickets }}</h3>
             </div>
-            <div style="width: 24%;">
-                <p style="color: #999; margin: 0;">Ticket Number</p>
-                <h3>{{ ticket.ticket_number|slice:8 }}</h3>
-            </div>
-            <div style="width: 24%;">
+        </div>
+        <div style="margin-top: 20px">
+            <p style="color: #999; margin: 0;">Ticket Number</p>
+            <h3>No. {{ ticket.get_ticket_number  }}</h3>
+        </div>
+        <hr style="border-color: #ddd; margin-top: 20px">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-top: 25px">
+            <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Paid</p>
-                <h3>Ksh {{ ticket.amount }}</h3>
+                <h3>KES {{ ticket.amount }}</h3>
+            </div>
+            <div style="width: 48%;">
+                <p style="color: #999; margin: 0;">Paid Via</p>
+                <h3>{{ ticket.get_payment_method }}</h3>
             </div>
         </div>
-        <hr style="border-color: #ddd;">
+        <div style="margin-top: 20px">
+            <p style="color: #999; margin: 0;">Transaction Code</p>
+            <h3>{{ ticket.get_transaction_code }}</h3>
+        </div>
+        <hr style="border-color: #ddd; margin-top: 20px">
         <div style="display: flex; justify-content: space-between; align-items: start;">
             <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Date</p>
-                <h4>{{ event.date }}</h4>
+                <h4>{{ ticket.event.date }}</h4>
             </div>
             <div style="width: 48%;">
                 <p style="color: #999; margin: 0;">Time</p>
-                <h4>{{ event.start_time }} - {{ event.end_time }}</h4>
+                <h4>{{ ticket.event.start_time }} - {{ ticket.event.end_time }}</h4>
             </div>
         </div>
-        <hr style="border-color: #ddd;">
+        <div style="border-bottom: 2px dashed #ababab; width: 100%; margin: 3rem auto;"></div>
         <p style="color: #999; text-align: center;">Show the QR Code at the entrance</p>
         <div style="text-align: center; margin: 20px 0;">
-            <img src="https://tikitizetu.com{{ ticket.qr.url }}" alt="" style="height: 230px; width: auto; object-fit: cover; border: 1px solid #ddd; border-radius: 8px;">
+            <img src="https://tikitizetu.com{{ ticket.qr.url }}" alt="QR Code for ticket" style="height: 230px; width: auto; object-fit: cover; border: 1px solid #ddd; border-radius: 8px;">
         </div>
+        <div style="border-bottom: 2px dashed #ababab; width: 100%; margin: 3rem auto;"></div>
+        <p style="color: #999; font-size: .7rem">{{ ticket.event.event_disclaimer }}</p>
     </div>
     <div style="display: flex; flex-direction: row; gap: 10px; margin-top: 20px;">
-        <a href="https://tikitizetu.com{{ event.get_url }}" style="display: block; text-decoration: none; text-align: center; background-color: #f8f8f8; border: 1px solid #ddd; border-radius: 8px; padding: 10px; width: 100%; color: #333;">See event details</a>
-        <a href="https://tikitizetu.com{{ ticket.pdf_ticket.url }}" download style="display: block; text-decoration: none; text-align: center; background-color: #007bff; border: 1px solid #007bff; border-radius: 8px; padding: 10px; width: 100%; color: #fff;">Download ticket</a>
+        <a href="https://tikitizetu.com{{ ticket.event.get_url }}" style="text-decoration: none; text-align: center; background-color: #f8f8f8; border: 1px solid #ddd; border-radius: 20px; padding: 10px; width: 100%; color: #1f2041; margin-right: .5rem">Event details</a>
+        <a href="https://tikitizetu.com{{ ticket.pdf_ticket.url }}" download style="text-decoration: none; text-align: center; background-color: #1f2041; border: 1px solid #1f2041; border-radius: 20px; padding: 10px; width: 100%; color: #fff; margin-left: .5rem">Download ticket</a>
     </div>
 </div>
