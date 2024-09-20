@@ -15,15 +15,17 @@ def payment_failed(request, ticket_number):
 
 def payment_success(request, ticket_number):
     ticket = Ticket.objects.get(ticket_number=ticket_number)
-    ticket_url = request.build_absolute_uri(reverse(
-        'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
-    generate_qr(ticket_url, ticket)
-    ticket.save()
-    generate_pdf(
-        ticket_url, ticket.event, ticket, ticket.first_name, ticket.last_name,
-        ticket.email, ticket.phone_number, ticket.amount, ticket.ticket_type
-    )
-    ticket.save()
-    send_ticket_email(ticket, ticket.event)
-    ticket.save()
+    if ticket.qr:
+        pass
+    else:
+        ticket_url = request.build_absolute_uri(reverse(
+            'view_ticket', args=[ticket.event.slug, ticket.ticket_number, ticket.event.pk]))
+        generate_qr(ticket_url, ticket)
+        ticket.save()
+    if ticket.pdf_ticket:
+        pass
+    else:
+        generate_pdf(ticket)
+        send_ticket_email(ticket)
+        ticket.save()
     return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
