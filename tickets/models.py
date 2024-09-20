@@ -31,19 +31,31 @@ class Ticket(models.Model):
     def get_event(self):
         if self.event:
             return self.event
-        return None
+        return "N/A"
 
     @property
     def get_phone_number(self):
         if self.phone_number:
             return self.phone_number
-        return "None"
+        return "N/A"
+
+    @property
+    def get_fullname(self):
+        if self.first_name:
+            first_name = self.first_name
+        else:
+            first_name = "John"
+        if self.last_name:
+            last_name = self.last_name
+        else:
+            last_name = "Doe"
+        return str(f"{first_name} {last_name}")
 
     @property
     def get_email(self):
         if self.email:
             return self.email
-        return "None"
+        return "N/A"
 
     @property
     def get_url(self):
@@ -57,11 +69,27 @@ class Ticket(models.Model):
     def get_payment_method(self):
         if self.payment_mode:
             if self.payment_mode == 'pesapal':
-                payment_mode = "Pesapal"
+                payment_mode = "Card"
             else:
                 payment_mode = "M-Pesa"
             return payment_mode
-        return "None"
+        return "N/A"
+
+    @property
+    def get_transaction_code(self):
+        if self.payment_mode:
+            if self.payment_mode == 'pesapal':
+                transaction_code = self.order_tracking_id
+            else:
+                transaction_code = self.mpesa_code
+            return transaction_code
+        return "N/A"
+
+    @property
+    def get_ticket_number(self):
+        if self.event:
+            return f"{self.event.pk}{self.pk}"
+        return "N/A"
 
     def __str__(self):
         if self.paid:
