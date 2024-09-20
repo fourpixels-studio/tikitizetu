@@ -1,20 +1,28 @@
 {% extends 'base.html' %}
 {% block body %}
-<main class="container">
-    <div class="row justify-content-center my-5 py-5 align-items-center">
-        <div class="col-sm-12 col-lg-7 text-center pending-container">
-            <i style="font-size: 4rem;" class="fa-solid fa-spinner text-danger fa-spin"></i>
-            <h1>Your payment is being processed.</h1>
-            <small class="text-muted">Thank you for your purchase. We are processing your payment for ticket number: <strong>{{ ticket_number }}</strong>. A prompt will appear on your phone requesting you to confirm the transaction by providing your MPESA PIN.</small>
-            <small class="text-muted">Once completed, you will receive the confirmation SMS for this transaction.</small>
+<main class="container px-4">
+    <div class="d-flex flex-column justify-content-center my-5 py-4 align-items-center">
+        <div class="col-sm-12 col-lg-6 text-center">
+            <i style="font-size: 5rem;" class="fa-solid fa-spinner text-warning fa-spin"></i>
+            <h1 class="my-4">Your payment is being processed...</h1>
+            <p class="text-muted">A request will appear on your phone <strong>( {{ ticket.get_phone_number }} )</strong> to confirm the transaction with your MPESA PIN. After completion, you’ll receive a confirmation SMS and email. You’ll then be redirected to view your ticket."</p>
+        </div>
+        <div class="text-center mt-4">
+            <div class="col">
+                <p style="background-color: bisque; font-size: .8rem" class="border rounded-pill border-warning px-3 py-2">Note: Do not refresh, close or click the back button in this page. Your data might get lost.</p>
+            </div>
         </div>
     </div>
 </main>
 
 <script>
-    const ticketNumber = "{{ ticket_number }}";
+    const ticketNumber = "{{ ticket.ticket_number }}";
     const url = `/s/check-payment-status/${ticketNumber}/`;
 
+    let attempts = 0;
+    const maxAttempts = 18;
+
+    // Function to check payment status
     function checkPaymentStatus() {
         fetch(url, {
             method: 'GET',
@@ -30,13 +38,15 @@
             } else if (data.status === "failed") {
                 // Redirect to the payment failed page
                 window.location.href = `/payment-failed/${ticketNumber}/`;
+            } else if (attempts >= maxAttempts) {
+                // If the maximum number of attempts is reached, redirect to the failed page
+                window.location.href = `/payment-failed/${ticketNumber}/`;
             }
         })
         .catch(error => console.error('Error checking payment status:', error));
+        attempts++;
     }
-
     // Check payment status every 5 seconds
     setInterval(checkPaymentStatus, 5000);
 </script>
-
 {% endblock %}
