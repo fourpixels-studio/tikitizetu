@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
-from tickets.models import Ticket
 from django.urls import reverse
-from tickets.utils import generate_pdf, generate_qr
+from tickets.models import Ticket
 from tickets.email import send_ticket_email
+from django.shortcuts import render, redirect
+from tickets.utils import generate_pdf, generate_qr
 
 
 def payment_failed(request, ticket_number):
