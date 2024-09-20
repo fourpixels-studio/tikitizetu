@@ -26,7 +26,6 @@ def purchase_ticket(request):
         event_id = request.POST.get('event')
         payment_method = request.POST.get('payment_method')
         event = Event.objects.get(id=event_id)
-
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -72,8 +71,7 @@ def purchase_ticket(request):
                     ticket.save()
                     return redirect('safaricom_processing_payment', ticket.ticket_number)
                 else:
-                    logger.error(
-                        "No response from safaricom.initiate_stk_push")
+                    logger.error("No response from safaricom.initiate_stk_push")
                     ticket.status = "Payment initiation failed inside safaricom payment"
                     ticket.save()
                     return redirect('payment_failed', ticket.ticket_number)
@@ -106,8 +104,7 @@ def purchase_ticket(request):
                 return redirect('payment_failed', ticket.ticket_number)
         else:
             ticket.status = "Payment initiation failed outside safaricom payment"
-            messages.error(
-                request, "Payment initiation failed outside safaricom payment")
+            messages.error(request, "Payment initiation failed outside safaricom payment")
             return redirect('payment_failed', ticket.ticket_number)
     return HttpResponse("Invalid request method", status=400)
 
