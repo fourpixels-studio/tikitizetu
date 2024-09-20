@@ -11,17 +11,17 @@
                         <p>Copy the link below to share the event on social media:</p>
                         <div class="col-lg-8 col-lg-12">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="eventShareLink" value="{{ event.get_share_link }}" readonly>
+                                <input type="text" class="form-control" id="eventShareLink" value="{{ ticket.event.get_share_link }}" readonly>
                                 <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">Copy</button>
                             </div>
                             <div class="d-flex justify-content-between flex-row gap-3 mt-3">
-                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ event.get_share_link }}" target="_blank" class="btn btn-secondary w-100">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ ticket.event.get_share_link }}" target="_blank" class="btn btn-secondary w-100">
                                     <i class="fab fa-facebook-f"></i> Facebook
                                 </a>
-                                <a href="https://twitter.com/intent/tweet?url={{ event.get_share_link }}&text=Check out this event!" target="_blank" class="w-100 btn btn-secondary">
+                                <a href="https://twitter.com/intent/tweet?url={{ ticket.event.get_share_link }}&text=Check out this event!" target="_blank" class="w-100 btn btn-secondary">
                                     <i class="fab fa-twitter"></i> Twitter
                                 </a>
-                                <a href="https://wa.me/?text={{ event.get_share_link }}" target="_blank" class="w-100 btn btn-secondary">
+                                <a href="https://wa.me/?text={{ ticket.event.get_share_link }}" target="_blank" class="w-100 btn btn-secondary">
                                     <i class="fab fa-whatsapp"></i> WhatsApp
                                 </a>
                             </div>
