@@ -85,6 +85,9 @@ html {
 .fw-700{
     font-weight: 700;
 }
+.add-ticket:hover{
+background-color: rgb(52, 89, 52);
+}
 .add-ticket{
     background-color: rgb(112, 183, 112);
     padding-left: .8rem;
@@ -97,6 +100,10 @@ html {
     justify-content: center;
     display: flex;
     border: none;
+    cursor: pointer;
+}
+.remove-ticket:hover{
+    background-color: rgb(114, 43, 43);
 }
 .remove-ticket{
     align-items: center;
@@ -110,6 +117,7 @@ html {
     color: #fff;
     border-radius: 50px;
     border: none;
+    cursor: pointer;
 }
 .quantity{
     font-size: 1.5rem;
@@ -178,3 +186,77 @@ html {
 .display-6{
     font-size: 2.5rem !important;
 }
+
+/* Navbar toggler button animation start */
+.navbar-toggler{
+    width: 30px;
+    height: 30px;
+    position: relative;
+    transition: .5s ease-in-out;
+}
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus{
+    outline: none;
+    box-shadow: none;
+    border: 0;
+}
+.navbar-toggler span{
+    margin: 0;
+    padding: 0;
+}
+.toggler-icon{
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #ffc857;
+    border-radius: 1px;
+    opacity: 1;
+    left: 0;
+    transform: rotate(0deg);
+    transition: .25s ease-in-out;
+}
+.middle-bar{
+    margin-top: 0px;
+}
+/* When navigation is clicked */
+.navbar-toggler .top-bar{
+    margin-top: 0px;
+    transform: rotate(135deg);
+}
+
+.navbar-toggler .middle-bar{
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.navbar-toggler .bottom-bar{
+    margin-top: 0px;
+    transform: rotate(-135deg);
+}
+
+/* State when the navbar is collapsed */
+
+.navbar-toggler.collapsed .top-bar{
+    margin-top: -20px;
+    transform: rotate(0deg);
+}
+
+.navbar-toggler.collapsed .middle-bar{
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.navbar-toggler.collapsed .bottom-bar{
+    margin-top: 20px;
+    transform: rotate(0deg);
+}
+
+/* Color of the three lines */
+.navbar-toggler.collapsed .toggler-icon{
+    background: linear-gradient(263deg, #ffd787, #ffc857 100%);
+}
+
+/* Navbar toggler button animation end */
