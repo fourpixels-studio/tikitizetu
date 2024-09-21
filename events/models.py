@@ -25,7 +25,7 @@ class Event(models.Model):
 
     @property
     def get_share_link(self):
-        current_site = settings.SITE_DOMAIN
+        current_site = settings.MY_SITE
         event_url = self.get_url
         return f"{current_site}{event_url}"
         
