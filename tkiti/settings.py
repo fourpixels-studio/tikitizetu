@@ -140,6 +140,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SITE_DOMAIN = "https://www.tikitizetu.com/"
+MY_SITE = "https://www.tikitizetu.com"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.tikitizetu.com'
