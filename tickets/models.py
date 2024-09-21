@@ -86,6 +86,20 @@ class Ticket(models.Model):
         return "N/A"
 
     @property
+    def get_qr(self):
+        if self.paid:
+            if self.qr:
+                return self.qr.url
+        return None
+
+    @property
+    def get_pdf_ticket(self):
+        if self.paid:
+            if self.pdf_ticket:
+                return self.pdf_ticket.url
+        return None
+
+    @property
     def get_ticket_number(self):
         if self.event:
             return f"{self.event.pk}{self.pk}"
