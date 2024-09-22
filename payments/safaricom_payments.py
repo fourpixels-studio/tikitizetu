@@ -13,14 +13,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 logger = logging.getLogger('django')
 
 
-@sensitive_variables('PESAPAL_CONSUMER_KEY', 'PESAPAL_CONSUMER_SECRET', 'SAFARICOM_PASSKEY')
+@sensitive_variables('SAFARICOM_INITIATOR_NAME', 'SAFARICOM_INITIATOR_PASSWORD', 'SAFARICOM_SHORTCODE', 'SAFARICOM_PASSKEY')
 class Safaricom:
 
     def __init__(self):
         self.base_url = settings.SAFARICOM_BASE_URL
         self.callback_url = f'{settings.SITE_DOMAIN}s/payment-confirmation/'
         self.validation_url = f'{settings.SITE_DOMAIN}s/payment-validation/'
-        self.InitiatorName = settings.INITIATOR_NAME
+        self.InitiatorName = settings.SAFARICOM_INITIATOR_NAME
         self.InitiatorPassword = settings.SAFARICOM_INITIATOR_PASSWORD
         self.shortcode = settings.SAFARICOM_SHORTCODE
         self.passkey = settings.SAFARICOM_PASSKEY
@@ -59,7 +59,8 @@ class Safaricom:
         }
 
         response = requests.post(
-            self.base_url+endpoint, headers=headers, json=payload)
+            self.base_url+endpoint, headers=headers, json=payload
+        )
 
         if response.status_code == 200:
             response_data = response.json()
@@ -75,7 +76,7 @@ class Safaricom:
             logger.info(response.json())
             return False
 
-    def initiate_stk_push(self, amount, phone_number, display_name):
+    def initiate_stk_push(self, amount, phone_number, transaction_description):
         endpoint = "mpesa/stkpush/v1/processrequest"
 
         headers = {
@@ -94,7 +95,7 @@ class Safaricom:
             "PhoneNumber": phone_number,
             "CallBackURL": self.callback_url,
             "AccountReference": "TIKITI ZETU",
-            "TransactionDesc": display_name,
+            "TransactionDesc": transaction_description,
         }
         response = requests.post(
             self.base_url+endpoint,
@@ -173,8 +174,7 @@ def safaricom_payment_callback(request):
             checkout_request_id = stk_callback.get('CheckoutRequestID')
 
             # You can get the metadata about the transaction from 'CallbackMetadata'
-            callback_metadata = stk_callback.get(
-                'CallbackMetadata', {}).get('Item', [])
+            callback_metadata = stk_callback.get('CallbackMetadata', {}).get('Item', [])
 
             # Extract necessary data from callback metadata
             amount = None
