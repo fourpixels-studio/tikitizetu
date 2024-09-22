@@ -69,7 +69,10 @@ class Ticket(models.Model):
     def get_payment_method(self):
         if self.payment_mode:
             if self.payment_mode == 'pesapal':
-                payment_mode = "Card"
+                if self.mpesa_code:
+                    payment_mode = "M-Pesa"
+                else:
+                    payment_mode = "Card"
             else:
                 payment_mode = "M-Pesa"
             return payment_mode
@@ -79,7 +82,10 @@ class Ticket(models.Model):
     def get_transaction_code(self):
         if self.payment_mode:
             if self.payment_mode == 'pesapal':
-                transaction_code = self.order_tracking_id
+                if self.mpesa_code:
+                    transaction_code = self.mpesa_code
+                else:
+                    transaction_code = self.order_tracking_id[:10]
             else:
                 transaction_code = self.mpesa_code
             return transaction_code
@@ -100,7 +106,7 @@ class Ticket(models.Model):
         return None
 
     @property
-    def get_ticket_number(self):
+    def get_reference_number(self):
         if self.event:
             return f"{self.event.pk}{self.pk}"
         return "N/A"
