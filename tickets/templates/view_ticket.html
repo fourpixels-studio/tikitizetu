@@ -17,7 +17,7 @@
                     <p class="text-muted" style="font-size: .9rem">Hosted by {{ ticket.event.host }}, {{ ticket.event.event_description }}</p>
                     <hr class="text-muted">
                     <div class="d-flex flex-wrap justify-content-betwwen align-items-start">
-                        <div class="col-6">
+                        <div class="col-12">
                             <p class="small my-0 text-muted fw-300">Name</p>
                             <h5>{{ ticket.get_fullname }}</h5>
                         </div>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-12 mt-3">
                             <p class="small mb-0 text-muted fw-300">Ticket Number</p>
-                            <h5>No. {{ ticket.get_ticket_number }}</h5>
+                            <h5>No. {{ ticket.get_reference_number }}</h5>
                         </div>
                     </div>
                     <hr class="text-muted">
