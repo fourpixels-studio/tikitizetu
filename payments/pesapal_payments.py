@@ -10,7 +10,6 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_variables
 
-
 logger = logging.getLogger('django')
 
 
@@ -39,7 +38,7 @@ class PesaPal:
 
     def registerIPN_URL(self):
         endpoint = "URLSetup/RegisterIPN"
-        myIPN_url = f'{settings.SITE_DOMAIN}pesapal/payment-callback/'
+        myIPN_url = f'{settings.SITE_DOMAIN}pesapal/ipn/'
 
         payload = json.dumps({
             "url": myIPN_url,
@@ -57,26 +56,26 @@ class PesaPal:
 
         return response.json()
 
-    def submit_order(self, transaction_id, amount, description, phone_number, email, first_name, last_name, ticket_number, event_slug, event_id):
+    def submit_order(self, ticket, description):
         endpoint = "Transactions/SubmitOrderRequest"
 
-        callback_url = f'{settings.SITE_DOMAIN}ticket/{event_slug}/{ticket_number}/{event_id}/'
-        cancellation_url = f'{settings.SITE_DOMAIN}payment-failed/{ticket_number}/'
+        callback_url = f'{settings.SITE_DOMAIN}pesapal/payment-callback/'
+        cancellation_url = f'{settings.SITE_DOMAIN}payment-failed/{ticket.ticket_number}/'
 
         payload = json.dumps({
-            "id": transaction_id,
+            "id": ticket.ticket_number,
             "currency": "KES",
-            "amount": amount,
+            "amount": ticket.amount,
             "description": description,
             "callback_url": callback_url,
             "cancellation_url": cancellation_url,
             "notification_id": self.registerIPN_URL()['ipn_id'],
             "billing_address": {
-                "email_address": email,
-                "phone_number": phone_number,
-                "first_name": first_name,
+                "email_address": ticket.get_email,
+                "phone_number": ticket.phone_number,
+                "first_name": ticket.first_name,
                 "middle_name": "",
-                "last_name": last_name,
+                "last_name": ticket.last_name,
                 "line_1": "",
                 "line_2": "",
                 "city": "",
@@ -114,13 +113,12 @@ class PesaPal:
                 "Content-Type": 'application/json',
                 "Authorization": self.authenticate(),
             }
-            response = requests.get(
-                self.base_url + endpoint, headers=headers
-            )
-            response_data = response.json()
+            response = requests.get(self.base_url + endpoint, headers=headers)
 
-            if response_data.get('status') == 'Completed':
-                return response_data
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print("Wrong transaction ID")
             time.sleep(5)
 
         raise Exception("Transaction status check timed out.")
@@ -128,87 +126,52 @@ class PesaPal:
 
 @csrf_exempt
 def pesapal_payment_callback(request):
-    order_tracking_id = request.GET.get('OrderTrackingId')
-    order_merchant_reference = request.GET.get('OrderMerchantReference')
-    order_notification_type = request.GET.get('OrderNotificationType')
-
-    if order_notification_type == 'CALLBACKURL':
-        try:
-            ticket = Ticket.objects.get(
-                transaction_id=order_merchant_reference)
-            pesapal = PesaPal()
-
-            transaction_data = pesapal.check_transaction(order_tracking_id)
-            status = transaction_data.get('status')
-
-            if status == 'Completed':
-                ticket.order_tracking_id = order_tracking_id
-                ticket.status = 'Paid'
-                ticket.paid = True
-                ticket.payment_date = timezone.now()
-                ticket.save()
-                return redirect('view_ticket', ticket.event.slug, ticket.ticket_number, ticket.event.pk)
-            else:
-                ticket.order_tracking_id = order_tracking_id
-                ticket.paid = False
-                ticket.status = 'Payment Failed (callback invalid)'
-                ticket.save()
-                return redirect('cart', slug=ticket.event.slug, pk=ticket.event.pk)
-
-        except Ticket.DoesNotExist:
-            return HttpResponse("Ticket not found", status=404)
+    try:
+        order_tracking_id = request.GET.get('OrderTrackingId')
+        order_merchant_reference = request.GET.get('OrderMerchantReference')
+        ticket = Ticket.objects.get(
+            ticket_number=order_merchant_reference)
+        pesapal = PesaPal()
+        transaction_data = pesapal.check_transaction(order_tracking_id)
+        status = transaction_data['payment_status_description']
+        if status == 'Completed':
+            ticket.status = status
+            if transaction_data['confirmation_code']:
+                ticket.mpesa_code = transaction_data['confirmation_code']
+            ticket.paid = True
+            ticket.payment_date = transaction_data['created_date']
+            ticket.save()
+            return redirect('payment_success', ticket.ticket_number)
+        else:
+            status = transaction_data['payment_status_description']
+            ticket.paid = False
+            ticket.save()
+            return redirect('payment_failed', ticket.ticket_number)
+    except:
+        return HttpResponse("Invalid request", status=405)
 
 
 @csrf_exempt
 def pesapal_payment_ipn(request):
-    if request.method == 'GET':
-        order_tracking_id = request.GET.get('OrderTrackingId')
-        merchant_reference = request.GET.get('OrderMerchantReference')
-        notification_type = request.GET.get('OrderNotificationType')
-
+    if request.method == 'POST':
+        order_tracking_id = request.POST.get('OrderTrackingId')
+        merchant_reference = request.POST.get('OrderMerchantReference')
+        notification_type = request.POST.get('OrderNotificationType')
         if notification_type == 'IPNCHANGE':
             pesapal = PesaPal()
-            transaction_status = pesapal.check_transaction(order_tracking_id)
-
+            transaction_status = pesapal.check_transaction(
+                order_tracking_id)
             try:
-                ticket = Ticket.objects.get(transaction_id=merchant_reference)
+                ticket = Ticket.objects.get(ticket_number=merchant_reference)
                 if transaction_status['status'] == 'COMPLETED':
                     ticket.paid = True
                     ticket.status = 'Paid'
                     ticket.order_tracking_id = order_tracking_id
                     ticket.payment_date = timezone.now()
                     ticket.save()
+                    logger.info(f"Returnng IPN Handled")
                     return HttpResponse("IPN handled", status=200)
             except Ticket.DoesNotExist:
                 return HttpResponse("Ticket not found", status=404)
-
         return HttpResponse("Invalid IPN request", status=400)
-
     return HttpResponse(status=405)
-
-
-def process_pesapal_payment(
-        transaction_id, amount, description, phone_number, email,
-        first_name, last_name, ticket_number, event_slug, event_id, ticket, request):
-
-    pesapal = PesaPal()
-    ticket = Ticket.objects.get(ticket_number=ticket_number)
-    try:
-        payment_response = pesapal.submit_order(
-            transaction_id, amount, description, phone_number, email,
-            first_name, last_name, ticket_number, event_slug, event_id
-        )
-
-        if 'redirect_url' in payment_response:
-            ticket.save()
-            return redirect(payment_response['redirect_url'])
-        else:
-            ticket.status = "Invalid payment response. Missing redirect URL."
-            logger.info(f"Invalid payment response. Missing redirect URL.")
-            ticket.save()
-            return redirect('payment_failed', ticket.ticket_number)
-    except:
-        logger.info("Payment initiation failed")
-        ticket.status = "Payment initiation failed"
-        ticket.save()
-        return redirect('payment_failed', ticket.ticket_number)
