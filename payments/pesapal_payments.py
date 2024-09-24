@@ -129,8 +129,7 @@ def pesapal_payment_callback(request):
     try:
         order_tracking_id = request.GET.get('OrderTrackingId')
         order_merchant_reference = request.GET.get('OrderMerchantReference')
-        ticket = Ticket.objects.get(
-            ticket_number=order_merchant_reference)
+        ticket = Ticket.objects.get(ticket_number=order_merchant_reference)
         pesapal = PesaPal()
         transaction_data = pesapal.check_transaction(order_tracking_id)
         status = transaction_data['payment_status_description']
@@ -139,12 +138,14 @@ def pesapal_payment_callback(request):
             if transaction_data['confirmation_code']:
                 ticket.mpesa_code = transaction_data['confirmation_code']
             ticket.paid = True
+            ticket.status = 'Completed'
             ticket.payment_date = transaction_data['created_date']
             ticket.save()
             return redirect('payment_success', ticket.ticket_number)
         else:
             status = transaction_data['payment_status_description']
             ticket.paid = False
+            ticket.status = 'Failed'
             ticket.save()
             return redirect('payment_failed', ticket.ticket_number)
     except:
@@ -159,8 +160,7 @@ def pesapal_payment_ipn(request):
         notification_type = request.POST.get('OrderNotificationType')
         if notification_type == 'IPNCHANGE':
             pesapal = PesaPal()
-            transaction_status = pesapal.check_transaction(
-                order_tracking_id)
+            transaction_status = pesapal.check_transaction(order_tracking_id)
             try:
                 ticket = Ticket.objects.get(ticket_number=merchant_reference)
                 if transaction_status['status'] == 'COMPLETED':
@@ -169,7 +169,6 @@ def pesapal_payment_ipn(request):
                     ticket.order_tracking_id = order_tracking_id
                     ticket.payment_date = timezone.now()
                     ticket.save()
-                    logger.info(f"Returnng IPN Handled")
                     return HttpResponse("IPN handled", status=200)
             except Ticket.DoesNotExist:
                 return HttpResponse("Ticket not found", status=404)
