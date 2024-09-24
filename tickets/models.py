@@ -8,17 +8,20 @@ class Ticket(models.Model):
     ticket_number = models.CharField(max_length=100, unique=True)
     order_tracking_id = models.CharField(max_length=100, null=True, blank=True)
     mpesa_code = models.CharField(max_length=20, null=True, blank=True)
-    checkout_request_id = models.CharField(max_length=100, null=True, blank=True)
+    checkout_request_id = models.CharField(
+        max_length=100, null=True, blank=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField(blank=True, null=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     paid = models.BooleanField(default=False, blank=True, null=True)
     ticket_type = models.CharField(max_length=30, blank=True, null=True)
-    num_tickets = models.CharField(max_length=20, default=1, null=True, blank=True)
+    num_tickets = models.CharField(
+        max_length=20, default=1, null=True, blank=True)
     amount = models.CharField(max_length=5, default=0)
     qr = models.FileField(upload_to='qrcodes/', blank=True, null=True)
-    pdf_ticket = models.FileField(upload_to='tickets/', max_length=100, null=True, blank=True)
+    pdf_ticket = models.FileField(
+        upload_to='tickets/', max_length=100, null=True, blank=True)
     payment_date = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=70, blank=True, null=True)
     payment_mode = models.CharField(max_length=20, blank=True, null=True)
@@ -76,29 +79,25 @@ class Ticket(models.Model):
 
     @property
     def get_transaction_code(self):
-        if self.payment_mode:
-            if self.payment_mode == 'pesapal':
-                if self.mpesa_code:
-                    transaction_code = self.mpesa_code
-                else:
-                    transaction_code = self.order_tracking_id[:10]
-            else:
-                transaction_code = self.mpesa_code
-            return transaction_code
-        return "N/A"
+        transaction_code = None
+        if self.mpesa_code:
+            transaction_code = self.mpesa_code
+        elif self.order_tracking_id and not self.mpesa_code:
+            transaction_code = self.order_tracking_id
+        else:
+            transaction_code = self.ticket_number[:8]
+        return transaction_code
 
     @property
     def get_qr(self):
-        if self.paid:
-            if self.qr:
-                return self.qr.url
+        if self.qr:
+            return self.qr.url
         return None
 
     @property
     def get_pdf_ticket(self):
-        if self.paid:
-            if self.pdf_ticket:
-                return self.pdf_ticket.url
+        if self.pdf_ticket:
+            return self.pdf_ticket.url
         return None
 
     @property
