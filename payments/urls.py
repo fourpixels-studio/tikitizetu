@@ -11,7 +11,7 @@ urlpatterns = [
     
     # safaricom urls
     path('s/processing-payment/<str:ticket_number>/', safaricom_processing_payment, name='safaricom_processing_payment'),
-    path("s/payment-confirmation/", safaricom_payment_callback, name="safaricom_payment_callback"),
+    path("s/payment-callback/", safaricom_payment_callback, name="safaricom_payment_callback"),
     path("s/payment-validation/", safaricom_payment_validation, name="safaricom_payment_validation"),
     path("s/check-payment-status/<str:ticket_number>/", safaricom_check_payment_status, name="safaricom_check_payment_status"),
     
