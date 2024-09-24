@@ -1,4 +1,3 @@
-import uuid
 import logging
 from events.models import Event
 from tickets.models import Ticket
@@ -48,7 +47,7 @@ def purchase_ticket(request):
             num_tickets=num_tickets,
             amount=amount,
             paid=False,
-            status="Pending",
+            status="pending",
             payment_mode=payment_method,
         )
 
@@ -65,13 +64,13 @@ def purchase_ticket(request):
                 if payment_response:
                     checkout_request_id = payment_response["CheckoutRequestID"]
                     ticket.checkout_request_id = checkout_request_id
-                    ticket.status = "Awaiting payment confirmation"
+                    ticket.status = 'pending'
                     ticket.save()
                     return redirect('safaricom_processing_payment', ticket.ticket_number)
                 else:
                     logger.error(
                         "No response from safaricom.initiate_stk_push")
-                    ticket.status = "Payment initiation failed inside safaricom payment"
+                    ticket.status = "failed"
                     ticket.save()
                     return redirect('payment_failed', ticket.ticket_number)
 
