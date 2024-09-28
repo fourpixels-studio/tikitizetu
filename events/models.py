@@ -1,10 +1,29 @@
 from django.db import models
-from django.utils.text import slugify
 from django.urls import reverse
 from django.conf import settings
+from django.utils.text import slugify
+
+
+class EventCategory(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
+
+    @property
+    def get_url(self):
+        return reverse("events_list", kwargs={
+            "slug": self.slug,
+        })
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class Event(models.Model):
+    category = models.ForeignKey(EventCategory, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     poster = models.TextField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
@@ -28,13 +47,13 @@ class Event(models.Model):
         current_site = settings.MY_SITE
         event_url = self.get_url
         return f"{current_site}{event_url}"
-        
+
     @property
     def get_ticket_categories(self):
         if TicketCategory.objects.filter(event=self).exists():
             return TicketCategory.objects.filter(event=self)
         return None
-        
+
     @property
     def get_url(self):
         return reverse("event_detail", kwargs={
@@ -61,8 +80,7 @@ class TicketCategory(models.Model):
         ('group_of_10', 'Group Of 10'),
     ]
 
-    event = models.ForeignKey(
-        Event, on_delete=models.CASCADE, related_name='ticket_categories')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_categories')
     category_name = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_tickets = models.IntegerField(default=0)
