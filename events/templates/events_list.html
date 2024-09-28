@@ -19,15 +19,27 @@
         </div>
         {% endif %}
         <div class="d-flex flex-row flex-wrap gap-2 mt-5 mb-2">
-            <span class="badge bg-secondary px-3 rounded-4 px-3 py-2">All</span>
-            <span class="badge bg-light border text-secondary rounded-4 px-3 py-2">Concert</span>
-            <span class="badge bg-light border text-secondary rounded-4 px-3 py-2">Theatre</span>
-            <span class="badge bg-light border text-secondary rounded-4 px-3 py-2">Comedy</span>
+            <a href="{% url 'events_list' %}" class="category-btn px-3 rounded-4 px-3 py-2 {% if active_category == category.slug %}bg-primary text-white{% endif %}">All</a>
+            {% for category in categories %}
+            <a class="category-btn rounded-4 px-3 py-2 {% if active_category == category.slug %}bg-primary text-white{% endif %}" href="{% url 'events_list' %}?category={{ category.slug }}">{{ category.name }}</a>
+            {% endfor %}
         </div>
         <div class="row py-3 g-4 align-items-start">
             {% for event in events %}
             <div class="col-sm-12 col-lg-4">
                 {% include 'components/event.html' %}
+            </div>
+            {% empty %}
+            <div class="col-sm-12 col-lg-4">
+                <div class="border rounded-4 p-3 bg-light">
+                    <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" style="height: 200px; width: 100%; object-fit: cover" class="rounded-4 img-fluid">
+                    <div class="d-flex flex-column">
+                        <h5 class="my-2">No {{ category_name }} events</h5>
+                        <p class="my-0 text-muted"></p>
+                        <p class="mb-0 text-muted fw-300">We don't have any {{ comedy_name }} events coming up, try other events.</p>
+                        <a href="{% url 'events_list' %}" class="w-100 btn mt-2 btn-primary px-4 rounded-pill">All events</a>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
