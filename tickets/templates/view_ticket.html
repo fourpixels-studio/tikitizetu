@@ -7,10 +7,10 @@
             <div class="text-center mb-4">
                 <i style="font-size: 4rem;" class="fa-regular fa-circle-check text-success"></i>
                 <h1 class="fw-300 mt-3 text-center">Thank you for the purchase!</h1>
-                <p class="text-muted text-center"><span><a href="{{ ticket.get_pdf_ticket }}" download class="text-primary fw-500">Download</a></span> ticket as a PDF</p>
+                <p class="text-muted text-center">Hey {{ ticket.first_name }}, here's your ticket for <strong>{{ ticket.event.name }}.</strong> We've sent a copy of the ticket to the email you provided.</p>
             </div>
-            <div class="rounded-4 border bg-white pb-4">
-                <img src="{{ ticket.event.poster }}" alt="Logo" style="height: 15vh; width: 100%; object-fit: cover; border-radius: 20px 20px 0 0">
+            <div class="border bg-white pb-4" style="border-radius: 0 0 20px 20px;">
+                <img src="{{ ticket.event.poster }}" alt="{{ ticket.event.name }}'s Poster" style="height: auto; width: 100%; object-fit: cover;">
                 <div class="px-4">
                     <h3 class="my-3">{{ ticket.event.name }}</h3>
                     <h6 class="text-muted mb-3"><i class="fa-solid fa-location-dot me-2"></i> {{ ticket.event.venue }}, {{ ticket.event.location }}</h6>
@@ -78,10 +78,12 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ ticket.event.get_url }}" class="btn mt-3 btn-primary w-100 rounded-4 btn-lg">See event details</a>
-            <p class="text-muted text-center mt-4">Or</p>
-            <div class="text-center">
-                <button class="text-secondary no-btn" data-bs-toggle="modal" data-bs-target="#shareEvent">Share event <i style="font-size: 1rem;" class="fa-solid fa-share ms-2"></i></button>
+            <div class="text-center mt-3">
+                <a href="{{ ticket.get_pdf_ticket }}" class="btn btn-primary w-100 rounded-4 btn-lg">Download</a>
+                <div class="d-flex flex-row justify-content-center align-items-center gap-4 mt-4">
+                    <a href="{{ ticket.event.get_url }}" class="link">See event details</a>
+                    <button class="text-secondary no-btn" data-bs-toggle="modal" data-bs-target="#shareEvent">Share event <i style="font-size: 1rem;" class="fa-solid fa-share ms-2"></i></button>
+                </div>
             </div>
         </div>
     </div>
