@@ -61,6 +61,12 @@ class Event(models.Model):
             "pk": self.pk,
         })
 
+    @property
+    def get_category_name(self):
+        if self.category:
+            return self.category.name
+        return "All"
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
