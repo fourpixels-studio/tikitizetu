@@ -5,7 +5,7 @@
     <header class="position-relative" id="eventsHeader" style="background-image: url('{{ event.poster }}');">
         <button onclick="goBack()" class="back-btn no-btn text-white position-absolute"><i style="font-size: 3rem;" class="fa-solid fa-circle-arrow-left"></i></button>
     </header>
-    <div class="container mt-5 px-4">
+    <div class="container my-5 px-4">
         <div class="row">
             <div class="col-sm-12 col-lg-8">
                 <h2 class="fw-bold">{{ event.name }}</h2>
@@ -36,22 +36,16 @@
             </div>
         </div>
         {% if event.map %}
-        <div class="container mb-5">
-            <div class="row justify-content-center">
-                <hr class="text-muted mb-5">
-                <div class="col-12">
-                    <div class="text-center">
-                        <h3 class="mb-4">Exact map location</h3>
-                        <div class="map-container" style="width: 100%; max-width: 100%; height: auto;">
-                            {{ event.map|safe }}
-                        </div>
-                    </div>
+        <div class="row justify-content-center my-5">
+            <div class="my-5">
+                <h3 class="mb-4">Exact map location</h3>
+                <div class="responsive-video-container">
+                    {{ event.map|safe }}
                 </div>
             </div>
         </div>
         {% endif %}
-        <hr class="text-muted">
-        <h3 class="mb-3">Upcoming events</h3>
+        <h3 class="mb-3 mt-5">Upcoming events</h3>
         <div class="d-flex flex-row gap-3 mt-3 pb-4 events-overflow">
             {% for event in upcoming_events %}
             <div class="col-sm-12 col-lg-4">
