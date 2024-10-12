@@ -141,7 +141,7 @@ def safaricom_payment_callback(request):
             checkout_request_id = stk_callback.get('CheckoutRequestID')
             callback_metadata = stk_callback.get('CallbackMetadata', {}).get('Item', [])
             logger.info(f"STK Callback Data: {stk_callback}")
-            
+
             amount = None
             mpesa_code = None
             payment_date = None
@@ -155,10 +155,9 @@ def safaricom_payment_callback(request):
                     payment_date = item['Value']
 
             if result_code == 0:
-                ticket = Ticket.objects.get(
-                    checkout_request_id=checkout_request_id)
+                ticket = Ticket.objects.get(checkout_request_id=checkout_request_id)
                 ticket.paid = True
-                ticket.status = 'Paid'
+                ticket.status = 'paid'
                 ticket.mpesa_code = mpesa_code
                 ticket.amount = amount
                 ticket.payment_date = payment_date
@@ -206,21 +205,17 @@ def safaricom_processing_payment(request, ticket_number):
 def safaricom_check_payment_status(request, ticket_number):
     try:
         ticket = get_object_or_404(Ticket, ticket_number=ticket_number)
-        safaricom = Safaricom()
-        checkout_request_id = ticket.checkout_request_id
-        response = safaricom.check_transaction_status(checkout_request_id)
 
-        if ticket.paid:
+        if ticket.paid == True:
+            ticket.status = "paid"
+            ticket.save()
             return JsonResponse({'status': 'success'})
+        elif ticket.status == 'pending':
+            return JsonResponse({'status': 'pending'})
+        elif ticket.status == 'failed':
+            return JsonResponse({'status': 'failed'})
         else:
-            if response['ResultCode'] == 0:
-                ticket.status = "Paid"
-                ticket.save()
-                return JsonResponse({'status': 'success'})
-            else:
-                ticket.status = response['ResultDesc']
-                ticket.save()
-                return JsonResponse({'status': 'failed'})
+            return JsonResponse({'status': 'failed'})
     except Ticket.DoesNotExist:
         logger.info("status failed message Ticket not found")
         return JsonResponse({'status': 'failed', 'message': 'Ticket not found'})
@@ -255,7 +250,7 @@ def safaricom_payment_validation(request):
             if result_code == 0:
                 ticket = Ticket.objects.get(checkout_request_id=checkout_request_id)
                 ticket.paid = True
-                ticket.status = 'Paid'
+                ticket.status = 'paid'
                 ticket.mpesa_code = mpesa_code
                 ticket.amount = amount
                 ticket.payment_date = payment_date
