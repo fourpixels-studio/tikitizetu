@@ -21,7 +21,7 @@
             <a class="category-btn rounded-4 px-3 py-2 {% if active_category == category.slug %}bg-primary text-white{% endif %}" href="{% url 'events_list' %}?category={{ category.slug }}">{{ category.name }}</a>
             {% endfor %}
         </div>
-        <div class="row py-3 g-4 align-items-start">
+        <div class="row py-3 gx-2 gy-4 align-items-start">
             {% for event in events %}
             <div class="col-sm-12 col-lg-4">
                 {% include 'components/event.html' %}
