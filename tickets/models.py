@@ -1,7 +1,7 @@
 from django.db import models
 from events.models import Event
 from django.urls import reverse
-
+from django.utils.timezone import now
 
 class Ticket(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -22,6 +22,13 @@ class Ticket(models.Model):
     payment_date = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=70, blank=True, null=True)
     payment_mode = models.CharField(max_length=20, blank=True, null=True)
+    created_at = models.DateTimeField(default=now, editable=False)
+    redeemed_at = models.DateTimeField(null=True, blank=True)
+    referral_code = models.CharField(max_length=50, null=True, blank=True)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    check_in_status = models.BooleanField(default=False)
+    refund_status = models.CharField(max_length=20, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Declined', 'Declined')], null=True, blank=True)
+
 
     @property
     def get_event(self):
@@ -103,9 +110,24 @@ class Ticket(models.Model):
             return f"{self.event.pk}{self.pk}"
         return "N/A"
 
+    @property
+    def get_payment_date(self):
+        if self.payment_mode and self.paid:
+            raw_date = self.payment_date
+            if self.payment_mode == 'pesapal':
+                # Format: 2024-10-10T13:30:30.083
+                date_parts = raw_date.split('T')[0].split('-')
+            else:
+                # Format: 20241012134002
+                date_parts = [raw_date[:4], raw_date[4:6], raw_date[6:8]]
+
+            year, month, day = date_parts
+            return f"{day}-{month}-{year}"
+        return "N/A"
+        
     def __str__(self):
         if self.paid:
             status = f"Paid via {self.get_payment_method}"
         else:
             status = f"NOT PAID: {self.status}"
-        return f"{self.first_name} {self.last_name}'s ticket | Status: {status}"
+        return f"{self.first_name} {self.last_name}'s ticket | Status: {status} | Date: {self.get_payment_date}"
