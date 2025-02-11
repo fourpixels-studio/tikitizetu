@@ -6,7 +6,7 @@ from django.conf import settings
 from django.utils import timezone
 from tickets.models import Ticket
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.debug import sensitive_variables
 
@@ -129,7 +129,8 @@ def pesapal_payment_callback(request):
     try:
         order_tracking_id = request.GET.get('OrderTrackingId')
         order_merchant_reference = request.GET.get('OrderMerchantReference')
-        ticket = Ticket.objects.get(ticket_number=order_merchant_reference)
+        ticket = Ticket.objects.get(
+            ticket_number=order_merchant_reference)
         pesapal = PesaPal()
         transaction_data = pesapal.check_transaction(order_tracking_id)
         status = transaction_data['payment_status_description']
@@ -138,7 +139,7 @@ def pesapal_payment_callback(request):
             if transaction_data['confirmation_code']:
                 ticket.mpesa_code = transaction_data['confirmation_code']
             ticket.paid = True
-            ticket.status = 'Completed'
+            ticket.status = 'Complete'
             ticket.payment_date = transaction_data['created_date']
             ticket.save()
             return redirect('payment_success', ticket.ticket_number)
@@ -160,17 +161,45 @@ def pesapal_payment_ipn(request):
         notification_type = request.POST.get('OrderNotificationType')
         if notification_type == 'IPNCHANGE':
             pesapal = PesaPal()
-            transaction_status = pesapal.check_transaction(order_tracking_id)
+            transaction_status = pesapal.check_transaction(
+                order_tracking_id)
             try:
                 ticket = Ticket.objects.get(ticket_number=merchant_reference)
                 if transaction_status['status'] == 'COMPLETED':
                     ticket.paid = True
-                    ticket.status = 'Paid'
+                    ticket.status = 'Complete'
                     ticket.order_tracking_id = order_tracking_id
                     ticket.payment_date = timezone.now()
                     ticket.save()
+                    logger.info(f"Returnng IPN Handled")
                     return HttpResponse("IPN handled", status=200)
             except Ticket.DoesNotExist:
                 return HttpResponse("Ticket not found", status=404)
         return HttpResponse("Invalid IPN request", status=400)
     return HttpResponse(status=405)
+
+
+
+def check_transaction_status(request, tracking_id):
+    try:
+        pesapal = PesaPal()
+        transaction_data = pesapal.check_transaction(tracking_id)
+        if transaction_data['status'] == '200':
+            context = {
+                "response": True,
+                "transaction_data": transaction_data,
+                "message": transaction_data['message'],
+                "title_tag": transaction_data['payment_status_description'],
+            }
+        else:
+            context = {
+                "response": False,
+                "title_tag": "Failed!",
+                "transaction_data": transaction_data,
+                "message": transaction_data['message'],
+            }
+        return render(request, "check_transaction_status.html", context)
+    except Exception as e:
+        print(
+            f"The transaction with the {tracking_id} ID does not exist.")
+        return HttpResponse(f"The transaction with the {tracking_id} ID does not exist.", status=404)
