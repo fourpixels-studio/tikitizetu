@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block body %}
+<main class="container px-4">
+    <div class="row justify-content-center my-5 py-5 align-items-center">
+        <div class="col-sm-12 col-lg-6 text-center">
+            <div class="card-header bg-grey-3 text-white">
+                <h4 class="mb-0">Transaction Status</h4>
+            </div>
+            <div class="card-body bg-grey-1">
+                {% if response %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% else %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endif %}
+                <table class="table table-bordered mt-3">
+                    <tbody class="text-start">
+                        <tr>
+                            <th>Payment Method</th>
+                            <td>{{ transaction_data.payment_method }}</td>
+                        </tr>
+                        <tr>
+                            <th>Amount</th>
+                            <td>{{ transaction_data.amount }} {{ transaction_data.currency }}</td>
+                        </tr>
+                        <tr>
+                            <th>Created Date</th>
+                            <td>{{ transaction_data.created_date }}</td>
+                        </tr>
+                        <tr>
+                            <th>Confirmation Code</th>
+                            <td>{{ transaction_data.confirmation_code }}</td>
+                        </tr>
+                        <tr>
+                            <th>Order Tracking ID</th>
+                            <td>{{ transaction_data.order_tracking_id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Status</th>
+                            <td>{{ transaction_data.payment_status_description }}</td>
+                        </tr>
+                        <tr>
+                            <th>Payment Account</th>
+                            <td>{{ transaction_data.payment_account }}</td>
+                        </tr>
+                        <tr>
+                            <th>Merchant Reference</th>
+                            <td>{{ transaction_data.merchant_reference }}</td>
+                        </tr>
+                        <tr>
+                            <th>Callback URL</th>
+                            <td><a href="{{ transaction_data.call_back_url }}" target="_blank">View Callback</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
