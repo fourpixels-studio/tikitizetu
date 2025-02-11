@@ -124,6 +124,15 @@ class Ticket(models.Model):
             year, month, day = date_parts
             return f"{day}-{month}-{year}"
         return "N/A"
+    
+    
+    @property
+    def get_status(self):
+        if self.paid:
+            status = f"Paid via {self.get_payment_method}"
+        else:
+            status = f"NOT PAID: {self.status}"
+        return status
         
     def __str__(self):
         if self.paid:
