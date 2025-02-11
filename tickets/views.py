@@ -108,3 +108,13 @@ def purchase_ticket(request):
             return redirect('payment_failed', ticket.ticket_number)
             
     return HttpResponse("Invalid request method", status=400)
+
+
+def tickets(request):
+    if request.user.is_superuser:
+        context = {
+            "title_tag": "All Tickets",
+            "tickets": Ticket.objects.order_by("-pk"),
+        }
+        return render(request, "tickets.html", context)
+    return redirect("index")
