@@ -320,3 +320,18 @@ background-color: rgb(52, 89, 52);
         padding-bottom: 75%;
     }
 }
+.hover-underline{
+    cursor: pointer;
+    text-decoration: none;
+}
+.hover-underline:hover{
+    text-decoration: underline;
+}
+.hover-shadow {
+    box-shadow: none;
+    transition: box-shadow .2s ease-in-out;
+}
+.hover-shadow:hover {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    transition: box-shadow .3s ease-in-out;
+}
