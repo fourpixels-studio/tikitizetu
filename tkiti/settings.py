@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "events",
     "cart",
     "payments",
+    "utils",
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "events.context_processors.search_function",
+                "utils.context_processors.search_function",
             ],
         },
     },
