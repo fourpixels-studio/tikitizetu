@@ -1,5 +1,5 @@
 <a href="{{ event.get_url }}" class="no-link">
-    <div class="bg-white hover-shadow" style="border-radius: 10px">
+    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
         <div style="position: relative;">
             <img src="{{ event.poster }}" alt="{{ event.name }}'s Poster" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
             <small 
@@ -27,7 +27,7 @@
                 <p class="text-dark fw-600 fw-500"> {{ event.date|date:"j" }}</p>
             </div>
             <div>
-                <h6 class="primary fw-400 hover-underline">{{ event.name }}</h6>
+                <h6 class="primary fw-400 hover-underline">{{ event.name|truncatechars:25 }}</h6>
                 <small class="text-sm text-muted small fw-300 hover-underline">{{ event.venue }}, {{ event.location }}</small>
             </div>
         </div>
