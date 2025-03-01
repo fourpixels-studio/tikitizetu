@@ -55,12 +55,18 @@ class Event(models.Model):
         return None
 
     @property
+    def get_ticket_price(self):
+        if self.get_ticket_categories:
+            return round(self.get_ticket_categories[0].price, 0)
+        return None
+
+    @property
     def get_url(self):
         return reverse("event_detail", kwargs={
             "slug": self.slug,
             "pk": self.pk,
         })
-
+        
     @property
     def get_category_name(self):
         if self.category:
@@ -85,7 +91,6 @@ class TicketCategory(models.Model):
         ('group_of_5', 'Group Of 5'),
         ('group_of_10', 'Group Of 10'),
     ]
-
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_categories')
     category_name = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
