@@ -1,8 +1,8 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg py-0 px-2 bg-primary">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'index' %}">
-            <img src="{% static 'logo.svg' %}" alt="Logo" style="height: 70px; width: auto; object-fit: cover" class="img-fluid">
+<nav class="navbar navbar-expand-lg navbar-dark py-0 bg-primary">
+    <div class="container-fluid px-3">
+        <a class="navbar-brand py-0" href="{% url 'index' %}">
+            <img src="{% static 'logo.svg' %}" alt="Tikiti Zetu Logo" style="height: 50px; width: auto; object-fit: cover" class="img-fluid">
         </a>
         <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="toggler-icon top-bar"></span>
@@ -12,17 +12,30 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'events_list' %}">Events</a>
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if '/events/' in request.path %}active{% endif %}" href="{% url 'events_list' %}">Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/contact/' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
                 </li>
                 {% if request.user.is_superuser %}
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="/admin/">Admin</a>
+                    <a class="nav-link" href="/admin/">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'tickets' %}">Tickets</a>
+                    <a class="nav-link" href="{% url 'tickets' %}">Tickets</a>
                 </li>
                 {% endif %}
             </ul>
+            <form class="d-flex mb-4 flex-row mb-lg-0 gap-3">
+                <button type="button" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" class="btn btn-outline-light w-100">Login</button>
+                <button type="button" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom" class="btn btn-outline-light w-100">Signup</button>
+            </form>
         </div>
     </div>
 </nav>
