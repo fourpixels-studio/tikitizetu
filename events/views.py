@@ -1,3 +1,4 @@
+from django.db.models import Count
 from .models import Event, EventCategory
 from django.shortcuts import render, get_object_or_404
 
@@ -11,13 +12,14 @@ def events_list(request):
 
     active_category = request.GET.get('category', None)
     context = {
+        "events": events,
         "title_tag": "Events",
         'category_name': "All",
-        "events": events,
         "active_category": active_category,
-        "categories": EventCategory.objects.all(),
+        "categories": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0),
+        "categories_count": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0).count(),
     }
-    return render(request, "events_list.html", context)
+    return render(request, "index.html", context)
 
 
 def event_detail(request, slug, pk):
@@ -33,5 +35,7 @@ def event_detail(request, slug, pk):
 def search_events(request):
     context = {
         "title_tag": f'"{request.GET.get("q")}" results',
+        "categories": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0),
+        "categories_count": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0).count(),
     }
-    return render(request, "events_list.html", context)
+    return render(request, "index.html", context)
