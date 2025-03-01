@@ -1,45 +1,137 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="container-fluid px-0 mx-0">
-    <header id="eventsHeader" style="background-image: url(https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
-        <div class="row justify-content-center mt-5">
-            <div class="col-sm-12 col-lg-6">
-                <h1 class="fw-bold mt-4 text-white text-center">Welcome to Tkiti Zetu!</h1>
-                <form action="{% url 'search_events' %}" method="GET" class="d-flex flex-column flex-sm-row w-100 gap-2">
-                    <input type="search" name="q" id="search" class="form-control form-control-lg" placeholder="Search event, concert & festival" required>
-                    <input type="submit" value="Search" class="btn btn-light px-4"/>
-                </form>
+{% load static %}
+<div class="container-fluid px-0 pb-5 mx-0">
+    <div class="p-3">
+        <div id="carouselExampleCaptions" class="carousel slide">
+            <div class="carousel-inner" style="border-radius: 8px">
+                <div class="carousel-item active">
+                    <img src="https://images.unsplash.com/photo-1635070636690-d887c1a77e7b?q=80&w=1471&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block" style="height: 300px; width: 100%; object-fit: cover; border-radius: 8px" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="d-block" style="height: 300px; width: 100%; object-fit: cover; border-radius: 8px" alt="...">
+                </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-    </header>
-    <div class="container p-4">
-        <h1 class="mt-5 fw-bold">Featured events</h1>
-        <p class="text-muted lead">Discover and book tickets for the best events happening around you. Don't miss out on the excitement!</p>
-        <div class="d-flex flex-row flex-wrap gap-2 mt-5 mb-2">
-            <a href="{% url 'events_list' %}" class="category-btn px-3 rounded-4 px-3 py-2 {% if active_category == category.slug %}bg-primary text-white{% endif %}">All</a>
+        <div class="d-flex flex-row gap-2 flex-wrap my-3">
+            <div>
+                <a href="{% url 'events_list' %}" class="rounded-3 px-3 btn btn-sm {% if active_category == None %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+            </div>
             {% for category in categories %}
-            <a class="category-btn rounded-4 px-3 py-2 {% if active_category == category.slug %}bg-primary text-white{% endif %}" href="{% url 'events_list' %}?category={{ category.slug }}">{{ category.name }}</a>
+            <div>
+                <a href="{% url 'events_list' %}?category={{ category.slug }}" class="rounded-3 px-3 btn btn-sm {% if active_category == category.slug %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ category.name }}</a>
+            </div>
             {% endfor %}
         </div>
-        <div class="row py-3 gx-2 gy-4 align-items-start">
+        <div class="col-sm-12 col-lg-5">
+            <form action="{% url 'search_events' %}" method="GET" class="input-group">
+                <input type="search" name="q" id="search" class="form-control" style="border-radius: 8px 0 0 8px;" placeholder="Search by artist, location or event" required>
+                <input type="submit" value="Search" class="btn btn-dark" style="border-radius: 0 8px 8px 0;"/>
+            </form>
+        </div>
+        {% if num_results %}
+        {% if num_results == 1 %}
+        <h6 class="text-muted fw-300 mt-3">Found 1 event in <span class="fw-500">{{ events.0.location }}</span> related to <span class="fw-500">"{{ query }}"</span>, available for you to explore</h6>
+        {% else %}
+        <h6 class="text-muted fw-300 mt-3">Check out these {{ num_results }} events related to <span class="fw-500">"{{ query|title }}"</span>, available for you to explore</h6>
+        {% endif %}
+        <div class="row g-3 mt-1 row-cols-2 align-items-start">
             {% for event in events %}
-            <div class="col-sm-12 col-lg-4">
+            <div class="col-sm-6 col-lg-3 col-md-4">
                 {% include 'components/event.html' %}
             </div>
             {% empty %}
             <div class="col-sm-12 col-lg-4">
-                <div class="border rounded-4 p-3 bg-light">
-                    <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" style="height: 200px; width: 100%; object-fit: cover" class="rounded-4 img-fluid">
-                    <div class="d-flex flex-column">
-                        <h5 class="my-2">No {{ category_name }} events</h5>
-                        <p class="my-0 text-muted"></p>
-                        <p class="mb-0 text-muted fw-300">We don't have any {{ category_name }} events coming up, try other events.</p>
-                        <a href="{% url 'events_list' %}" class="w-100 btn mt-2 btn-primary px-4 rounded-pill">All events</a>
+                <a href="{{ event.get_url }}" class="no-link">
+                    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
+                        <div style="position: relative;">
+                            <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Concert Stage" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
+                            <small 
+                                style="
+                                position: absolute; 
+                                top: 10px; 
+                                left: 10px; 
+                                background-color: #ffffff; 
+                                color: #1f2041;
+                                padding: 3px 7px;
+                                border-radius: 6px;
+                                font-size: 12px;
+                                z-index: 2;
+                                ">
+                                All
+                            </small>
+                        </div>
+                        <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
+                            <div class="text-center">
+                                <small class="primary fw-300"> Events</small>
+                                <p class="text-dark fw-600 fw-500"> 300+</p>
+                            </div>
+                            <div>
+                                <h6 class="primary fw-400 hover-underline">Check out other events</h6>
+                                <small class="text-sm text-muted small fw-300 hover-underline">No upcoming or past events with the {{ category_name }} word</small>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        {% if events|length == 1 %}
+        <h6 class="text-muted fw-300 mt-3">1 event in <span class="fw-500">{{ events.0.location }}</span> related to <span class="fw-500">{{ events.0.category.name }}</span>, available for you to explore</h6>
+        {% else %}
+        <h6 class="text-muted fw-300 mt-3">Over {{ events|length }} upcoming events available for you to explore</h6>
+        {% endif %}
+        <div class="row g-3 mt-1 row-cols-2 align-items-start">
+            {% for event in events %}
+            <div class="col-sm-6 col-lg-3 col-md-4">
+                {% include 'components/event.html' %}
+            </div>
+            {% empty %}
+            <div class="col-sm-12 col-lg-4">
+                <a href="{{ event.get_url }}" class="no-link">
+                    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
+                        <div style="position: relative;">
+                            <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Concert Stage" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
+                            <small 
+                                style="
+                                position: absolute; 
+                                top: 10px; 
+                                left: 10px; 
+                                background-color: #ffffff; 
+                                color: #1f2041;
+                                padding: 3px 7px;
+                                border-radius: 6px;
+                                font-size: 12px;
+                                z-index: 2;
+                                ">
+                                All
+                            </small>
+                        </div>
+                        <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
+                            <div class="text-center">
+                                <small class="primary fw-300"> Events</small>
+                                <p class="text-dark fw-600 fw-500"> 300+</p>
+                            </div>
+                            <div>
+                                <h6 class="primary fw-400 hover-underline">Check other events</h6>
+                                <small class="text-sm text-muted small fw-300 hover-underline">No upcoming or past events.</small>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
