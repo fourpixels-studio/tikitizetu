@@ -1,3 +1,15 @@
+:root {
+    --primary-color: #f17141;
+    --secondary-color: #257180;
+}
+body { font-family: Arial, sans-serif; }
+.hero { background: var(--primary-color); color: white; padding: 80px 0; }
+.btn-primary { background: var(--secondary-color); color: #333; border: none; }
+.btn-primary:hover { background: #ffd479; }
+.event-card img { height: 200px; object-fit: cover; }
+.category-box { background: var(--secondary-color); padding: 20px; border-radius: 10px; }
+.cta-section { background: var(--primary-color); color: white; padding: 50px 0; }
+.footer { background: #333; color: white; padding: 40px 0; }
 * {
     font-family: "Poppins", sans-serif;
     box-sizing: border-box;
@@ -216,7 +228,7 @@ background-color: rgb(52, 89, 52);
     position: absolute;
     height: 3px;
     width: 100%;
-    background: #ffc857;
+    background: #fff;
     border-radius: 1px;
     opacity: 1;
     left: 0;
@@ -261,7 +273,7 @@ background-color: rgb(52, 89, 52);
 
 /* Color of the three lines */
 .navbar-toggler.collapsed .toggler-icon{
-    background: linear-gradient(263deg, #ffd787, #ffc857 100%);
+    background: linear-gradient(263deg, #fff, #fff 100%);
 }
 
 /* Navbar toggler button animation end */
@@ -319,21 +331,6 @@ background-color: rgb(52, 89, 52);
     .responsive-video-container {
         padding-bottom: 75%;
     }
-}
-.hover-underline{
-    cursor: pointer;
-    text-decoration: none;
-}
-.hover-underline:hover{
-    text-decoration: underline;
-}
-.hover-shadow {
-    box-shadow: none;
-    transition: box-shadow .2s ease-in-out;
-}
-.hover-shadow:hover {
-    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
-    transition: box-shadow .3s ease-in-out;
 }
 .hover-underline{
     cursor: pointer;
