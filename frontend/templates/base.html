@@ -1,6 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+    {% if not request.user.username == '' %}
+    <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-');
+        </script>
+        {% endif %}
     <head>
         {% include "head.html" %}
     </head>
