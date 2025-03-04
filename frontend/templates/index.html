@@ -13,7 +13,12 @@
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6">
-                <img src="{% static 'images/tickets.png' %}" class="img-fluid rounded-2 mt-4" alt="...">
+                <picture>
+                    <source media="(min-width: 1200px)" srcset="{% static 'images/tickets-1200px.png' %}">
+                    <source media="(min-width: 992px)" srcset="{% static 'images/tickets-992px.png' %}">
+                    <source media="(min-width: 576px)" srcset="{% static 'images/tickets-576px.png' %}">
+                    <img src="{% static 'images/tickets-576px.png' %}" alt="Tickets Image" loading="lazy" class="img-fluid rounded-2 mt-4">
+                </picture>
             </div>
         </div>
     </div>
