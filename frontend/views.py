@@ -1,3 +1,4 @@
+from .models import Testimonial
 from django.db.models import Count
 from django.shortcuts import render
 from events.models import Event, EventCategory
@@ -13,9 +14,10 @@ def index(request):
 
     context = {
         "events": events,
-        "title_tag": "Home",
         'category_name': "All",
         "active_category": active_category,
+        "title_tag": "Your Ultimate Event Ticketing Platform",
+        "testimonials": Testimonial.objects.filter(post_testimonial=True),
         "categories": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0),
         "categories_count": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0).count(),
     }
