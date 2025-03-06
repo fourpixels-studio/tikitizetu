@@ -1,0 +1,40 @@
+<div class="row g-3 align-items-start">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for testimonial in testimonials %}
+            {% if forloop.first or forloop.counter0|divisibleby:3 %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="10{{ forloop.counter }}00">
+                <div class="row g-3">
+                {% endif %}
+                    <div class="col-sm-12 col-md-4">
+                        <div class="bg-white rounded-4 p-4">
+                            <div class="d-flex flex-row align-items-center justify-content-start gap-3">
+                                <img style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%" src="{{ testimonial.image_link }}" alt="{{ testimonial.name }}'s Image" class="img-fluid">
+                                <div class="d-flex flex-column gap-2">
+                                    <p class="my-0 fw-500">{{ testimonial.name }}</p>
+                                    <div class="d-flex flex-row gap-1">
+                                        {% for _ in ""|rjust:testimonial.stars %}
+                                        <i class="fa-sm fa-solid fa-star text-warning"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="fw-300 mb-0 small text-muted mt-3">{{ testimonial.testimonial }}</p>
+                        </div>
+                    </div>
+                {% if forloop.last or forloop.counter|divisibleby:3 %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
