@@ -19,7 +19,7 @@ def events_list(request):
         "categories": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0),
         "categories_count": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0).count(),
     }
-    return render(request, "index.html", context)
+    return render(request, "events_list.html", context)
 
 
 def event_detail(request, slug, pk):
@@ -38,4 +38,4 @@ def search_events(request):
         "categories": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0),
         "categories_count": EventCategory.objects.annotate(event_count=Count('event')).filter(event_count__gt=0).count(),
     }
-    return render(request, "index.html", context)
+    return render(request, "events_list.html", context)
