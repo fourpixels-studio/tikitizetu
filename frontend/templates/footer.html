@@ -1,15 +1,37 @@
-<footer class="p-5 container-fluid bg-secondary">
-    <div class="contianer p-lg-5 p-3">
-        <ul class="nav justify-content-center mb-3">
-            <li class="nav-item"><a href="{% url 'index' %}" class="nav-link px-2 text-white">Home</a></li>
-            <li class="nav-item"><a href="{% url 'events_list' %}" class="nav-link px-2 text-white">Events</a></li>
-            <li class="nav-item"><a href="#" class="nav-link px-2 text-white">About</a></li>
-        </ul>
-        <div class="container">
-            <div class="row">
-                <hr style="color: #fff;">
+{% load static %}
+<footer class="container-fluid pb-5 px-4">
+    <hr class="mb-5 text-super-white">
+    <div class="row align-items-start justify-content-start gx-4 gy-5 mb-5">
+        <div class="col-sm-12 col-lg-5">
+            <img src="{% static 'logo.svg' %}" alt="Tickiti Zetu Logo" loading="lazy" class="img-fluid" style="height: 150px; width: auto; object-fit: cover">
+            <div class="d-flex flex-row flex-wrap gap-3 justify-content-start align-items-center mt-4">
+                <a target="_blank" class="hover-underline" href="https://instagram.com/tikiti_zetu/"><i class="fa-brands fa-instagram text-muted fa-xl"></i></a>
+                <a target="_blank" class="hover-underline" href="mailto:info@tikitizetu.com"><i class="fa-solid fa-envelope text-muted fa-xl"></i></a>
             </div>
         </div>
-        <p class="text-center text-white">© 2025 Tikiti Zetu, Inc. All rights reserved.</p>
+        <div class="col-sm-6 col-lg-3">
+            <div class="d-flex flex-column gap-2">
+                <h5>Pages</h5>
+                <a class="text-muted hover-underline" href="{% url 'index' %}">Home</a>
+                <a class="text-muted hover-underline" href="{% url 'about' %}">About</a>
+                <a class="text-muted hover-underline" href="{% url 'contact' %}">Contact</a>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="d-flex flex-column gap-2">
+                <h5>Help</h5>
+                <a class="text-muted hover-underline" href="#!">Help</a>
+                <a class="text-muted hover-underline" href="#!">Privacy Policy</a>
+                <a class="text-muted hover-underline" href="#!">Terms & Conditions</a>
+            </div>
+        </div>
+    </div>
+    <hr class="text-super-white">
+    <div class="d-flex flex-row justify-content-between flex-wrap gap-4 align-items-center pt-4">
+        <div class="col-sm-12 col-lg-6">
+            <h5 class="fw-400">Discover and book tickets for the hottest events</h5>
+            <small class="small fw-300 text-dark my-0 text-muted">We are Kenya’s top event ticketing platform, making ticketing easy and secure. From concerts to festivals, we connect you to the best events.</small>
+        </div>
+        <small class="text-dark fw-300 my-0 text-muted">© 2025 Tikiti Zetu, Inc. All rights reserved.</small>
     </div>
 </footer>
