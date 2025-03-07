@@ -2,7 +2,7 @@
 {% block body %}
 {% load static %}
 <main class="container-fluid px-0 pb-5 mx-0">
-    <div class="p-3">
+    <div class="p-3 mt-1">
         <div class="col-sm-12 col-lg-5 col-xxl-2">
             <form action="{% url 'search_events' %}" method="GET" class="input-group">
                 <input type="search" name="q" id="search" class="form-control" style="border-radius: 8px 0 0 8px;" placeholder="Search by artist, location or event" required>
@@ -11,11 +11,11 @@
         </div>
         <div class="d-flex flex-row gap-2 flex-wrap my-3">
             <div>
-                <a href="{% url 'events_list' %}" class="rounded-3 px-3 btn btn-sm {% if active_category == None %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+                <a href="{% url 'events_list' %}" class="rounded-3 px-3 btn btn-sm {% if active_category == None %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
             </div>
             {% for category in categories %}
             <div>
-                <a href="{% url 'events_list' %}?category={{ category.slug }}" class="rounded-3 px-3 btn btn-sm {% if active_category == category.slug %}btn-primary{% else %}btn-outline-secondary{% endif %}">{{ category.name }}</a>
+                <a href="{% url 'events_list' %}?category={{ category.slug }}" class="rounded-3 px-3 btn btn-sm {% if active_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">{{ category.name }}</a>
             </div>
             {% endfor %}
         </div>
@@ -29,37 +29,23 @@
         {% endif %}
         <div class="row g-3 mt-1 row-cols-2 align-items-start">
             {% for event in events %}
-            <div class="col-sm-6 col-lg-3 col-xxl-2">
+            <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                 {% include 'components/event.html' %}
             </div>
             {% empty %}
-            <div class="col-sm-6 col-lg-3 col-xxl-2">
+            <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                 <a href="{{ event.get_url }}" class="no-link">
-                    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
-                        <div style="position: relative;">
-                            <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Concert Stage" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
-                            <small 
-                                style="
-                                position: absolute; 
-                                top: 10px; 
-                                left: 10px; 
-                                background-color: #ffffff; 
-                                color: #1f2041;
-                                padding: 3px 7px;
-                                border-radius: 6px;
-                                font-size: 12px;
-                                z-index: 2;
-                                ">
-                                All
-                            </small>
+                    <div class="bg-white hover-shadow" style="border-radius: 10px;">
+                        <div class="mb-2" style="border-radius: 10px 10px 0 0; overflow: hidden">
+                            <img src="{% static 'tikitizetu_square_thumbnail.jpg' %}" alt="Tikiti Zetu Logo" style="border-radius: 10px 10px 0 0;" class="img-fluid">
                         </div>
                         <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
                             <div class="text-center">
-                                <small class="primary fw-300"> Events</small>
-                                <p class="text-dark fw-600 fw-500"> 300+</p>
+                                <small class="fw-300">Events</small>
+                                <p class="fw-600 fw-500">300+</p>
                             </div>
                             <div>
-                                <h6 class="primary fw-400 hover-underline">Check out other events</h6>
+                                <h6 class="fw-400 hover-underline">No events</h6>
                                 <small class="text-sm text-muted small fw-300 hover-underline">No upcoming or past events with the {{ category_name }} word</small>
                             </div>
                         </div>
@@ -78,38 +64,24 @@
         {% endif %}
         <div class="row g-3 mt-1 row-cols-2 align-items-start">
             {% for event in events %}
-            <div class="col-sm-6 col-lg-3 col-xxl-2">
+            <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                 {% include 'components/event.html' %}
             </div>
             {% empty %}
-            <div class="col-sm-6 col-lg-3 col-xxl-2">
+            <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                 <a href="{{ event.get_url }}" class="no-link">
-                    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
-                        <div style="position: relative;">
-                            <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Concert Stage" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
-                            <small 
-                                style="
-                                position: absolute; 
-                                top: 10px; 
-                                left: 10px; 
-                                background-color: #ffffff; 
-                                color: #1f2041;
-                                padding: 3px 7px;
-                                border-radius: 6px;
-                                font-size: 12px;
-                                z-index: 2;
-                                ">
-                                All
-                            </small>
+                    <div class="bg-white hover-shadow" style="border-radius: 10px;">
+                        <div class="mb-2" style="border-radius: 10px 10px 0 0; overflow: hidden">
+                            <img src="{% static 'tikitizetu_square_thumbnail.jpg' %}" alt="Tikiti Zetu Logo" style="border-radius: 10px 10px 0 0;" class="img-fluid">
                         </div>
                         <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
                             <div class="text-center">
-                                <small class="primary fw-300"> Events</small>
-                                <p class="text-dark fw-600 fw-500"> 300+</p>
+                                <small class="primary fw-300">Events</small>
+                                <p class="text-dark fw-600 fw-500">300+</p>
                             </div>
                             <div>
-                                <h6 class="primary fw-400 hover-underline">Check other events</h6>
-                                <small class="text-sm text-muted small fw-300 hover-underline">No upcoming or past events.</small>
+                                <h6 class="primary fw-400 hover-underline">Check out other events</h6>
+                                <small class="text-sm text-muted small fw-300 hover-underline">Check out other events</small>
                             </div>
                         </div>
                     </div>
