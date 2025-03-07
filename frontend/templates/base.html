@@ -17,7 +17,9 @@
     </head>
     <body id="top" style="background-color: #ffefe988">
         {% include 'navbar.html' %}
+        {% if messages %}
         {% include 'messages.html' %}
+        {% endif %}
 
         <!-- Content body -->
         <main class="container-fluid px-0">
