@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block body %}
+<main class="container px-sm-4">
+    <div class="row justify-content-center my-5">
+        <div class="col-sm-12 col-lg-6">
+            <h2 class="fw-500" id="postTestimonialModalLabel">Leave a review</h5>
+            <form method="post" enctype="multipart/form-data" action="{% url 'submit_testimonial' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="mb-1 small" for="name">Enter Name</label>
+                    {{ testimonial_form.name }}
+                </div>
+                <div class="mb-3">
+                    <label class="mb-1 small" for="department">Enter your department, company name or position</label>
+                    {{ testimonial_form.department }}
+                </div>
+                <div class="mb-3">
+                    <label class="mb-1 small" for="email">Enter your email (optional)</label>
+                    {{ testimonial_form.email }}
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="mb-1 small" for="image">Testimonial</label>
+                        {{ testimonial_form.testimonial }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label class="mb-1 small" for="image">Upload your image (optional)</label>
+                        {{ testimonial_form.image }}
+                    </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-12">
+                        <label class="mb-2 small">Rate Us:</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="stars" value="5">
+                            <label for="star5" class="fas fa-star"></label>
+                            <input type="radio" id="star4" name="stars" value="4">
+                            <label for="star4" class="fas fa-star"></label>
+                            <input type="radio" id="star3" name="stars" value="3">
+                            <label for="star3" class="fas fa-star"></label>
+                            <input type="radio" id="star2" name="stars" value="2">
+                            <label for="star2" class="fas fa-star"></label>
+                            <input type="radio" id="star1" name="stars" value="1">
+                            <label for="star1" class="fas fa-star"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">{{ testimonial_form.captcha }}</div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="form-check">
+                            {{ testimonial_form.post_testimonial }}
+                            <label class="form-check-label" for="post_testimonial">
+                                <small class="small text-muted" style="font-size: .8rem;">By checking this box, I consent to having my testimonial, including my name, department, and image, published on the website. I understand that my testimonial may be edited for clarity or length but will remain true to my original intent. I also confirm that the testimonial is my genuine opinion and experience with the service or product.</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Send my Review</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+<style>
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: start;
+    }
+    .star-rating input {
+        display: none;
+    }
+    .star-rating label {
+        font-size: 1.5rem;
+        color: #cccccc;
+        cursor: pointer;
+        padding-right: 8px;
+    }
+    .star-rating input:checked ~ label {
+        color: gold;
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: gold;
+    }
+</style>
+{% endblock %}
