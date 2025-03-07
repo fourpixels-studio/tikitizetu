@@ -8,8 +8,8 @@
                 <h1 class="display-4 mb-0 text-white fw-bold">{{ homepage.hero_h1 }}</h1>
                 <p class="lead text-white my-4">{{ homepage.hero_paragraph }}</p>
                 <div class="d-flex flex-row mb-2 justify-content-center gap-2">
-                    <a href="#" class="btn text-primary btn-light">{{ homepage.hero_primary_btn }}</a>
-                    <a href="#" class="btn btn-outline-light">{{ homepage.hero_secondary_btn }}</a>
+                    <a href="{% url 'events_list' %}" class="btn text-primary btn-light">{{ homepage.hero_primary_btn }}</a>
+                    <a href="#!" class="btn btn-outline-light">{{ homepage.hero_secondary_btn }}</a>
                 </div>
             </div>
             <div class="col-lg-8 col-sm-12 text-center">
@@ -23,13 +23,13 @@
         </div>
     </header>
     <div class="container-fluid px-4">
-        <div class="row justify-content-around align-items-center gy-4 my-5">
-            <div class="col-sm-12 col-lg-5">
+        <div class="row justify-content-center align-items-center gy-4 my-5">
+            <div class="col-sm-12 col-lg-5 col-xl-4">
                 <h1>{{ homepage.step_1_title }}</h1>
                 <p class="lead text-muted">{{ homepage.step_1_paragraph }}</p>
                 <a href="{% url 'events_list' %}" class="hover-underline text-primary">Check out more events <i class="ms-2 fa-solid fa-arrow-right"></i></a>
             </div>
-            <div class="col-sm-12 col-lg-5">
+            <div class="col-sm-12 col-md-9 col-lg-5 text-center">
                 <picture>
                     <source media="(min-width: 1200px)" srcset="{{ homepage.step_1_image_1200.url }}">
                     <source media="(min-width: 992px)" srcset="{{ homepage.step_1_image_992.url }}">
@@ -39,11 +39,11 @@
             </div>
         </div>
         <div class="row justify-content-around align-items-center gy-4 mb-5">
-            <div class="col-sm-12 col-lg-5 order-md-2">
+            <div class="col-sm-12 col-lg-5 order-lg-2">
                 <h1>{{ homepage.step_2_title }}</h1>
                 <p class="lead text-muted">{{ homepage.step_2_paragraph }}</p>
             </div>
-            <div class="col-sm-6 col-lg-3 order-md-1 text-center">
+            <div class="col-sm-5 col-lg-3 order-lg-1 text-center">
                 <picture>
                     <source media="(min-width: 1200px)" srcset="{{ homepage.step_2_image_1200.url }}">
                     <source media="(min-width: 992px)" srcset="{{ homepage.step_2_image_992.url }}">
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="row justify-content-around align-items-center gy-4 mb-5">
-            <div class="col-sm-12 col-lg-6">
+            <div class="col-sm-12 col-lg-6 col-xl-4">
                 <h1>{{ homepage.step_3_title }}</h1>
                 <p class="lead text-muted">{{ homepage.step_3_paragraph }}</p>
             </div>
@@ -86,34 +86,20 @@
             </div>
             <div class="row g-3 mt-1 pb-5 row-cols-2 align-items-start">
                 {% for event in events %}
-                <div class="col-sm-6 col-lg-4 col-xxl-2">
+                <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                     {% include 'components/event.html' %}
                 </div>
                 {% empty %}
-                <div class="col-sm-6 col-lg-4 col-xxl-2">
+                <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                     <a href="{{ event.get_url }}" class="no-link">
-                        <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
-                            <div style="position: relative;">
-                                <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Concert Stage" style="height: 200px; width: 100%; object-fit: cover; border-radius: 10px 10px 0 0;" class="mb-2">
-                                <small 
-                                    style="
-                                    position: absolute; 
-                                    top: 10px; 
-                                    left: 10px; 
-                                    background-color: #ffffff; 
-                                    color: #1f2041;
-                                    padding: 3px 7px;
-                                    border-radius: 6px;
-                                    font-size: 12px;
-                                    z-index: 2;
-                                    ">
-                                    All
-                                </small>
+                        <div class="bg-white hover-shadow" style="border-radius: 10px;">
+                            <div class="mb-2" style="border-radius: 10px 10px 0 0; overflow: hidden">
+                                <img src="{% static 'tikitizetu_square_thumbnail.jpg' %}" alt="Tikiti Zetu Logo" style="border-radius: 10px 10px 0 0;" class="img-fluid">
                             </div>
                             <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
                                 <div class="text-center">
-                                    <small class="fw-300"> Events</small>
-                                    <p class="fw-600 fw-500"> 300+</p>
+                                    <small class="fw-300">Events</small>
+                                    <p class="fw-600 fw-500">300+</p>
                                 </div>
                                 <div>
                                     <h6 class="fw-400 hover-underline">Check out other events</h6>
@@ -124,16 +110,16 @@
                     </a>
                 </div>
                 {% endfor %}
-                <div class="col-sm-6 col-lg-4 col-xxl-2">
+                <div class="col-sm-6 col-lg-3 col-xl-3 col-xxl-2">
                     <a href="{% url 'events_list' %}" class="no-link">
                         <div class="bg-white hover-shadow" style="border-radius: 10px;">
-                            <div class="px-3 pt-3">
-                                <img src="{% static 'logo.svg' %}" alt="Tikiti Zetu Logo" class="mb-2 img-fluid">
+                            <div class="mb-2" style="border-radius: 10px 10px 0 0; overflow: hidden">
+                                <img src="{% static 'tikitizetu_square_thumbnail.jpg' %}" alt="Tikiti Zetu Logo" style="border-radius: 10px 10px 0 0;" class="img-fluid">
                             </div>
                             <div class="d-flex mt-2 flex-row gap-3 px-3 pb-3 align-items-start">
                                 <div class="text-center">
                                     <small class="primary fw-300">Events</small>
-                                    <p class="fw-600 fw-500"> 300+</p>
+                                    <p class="text-dark fw-600 fw-500">300+</p>
                                 </div>
                                 <div>
                                     <h6 class="primary fw-400 hover-underline">Many more events here</h6>
@@ -173,12 +159,12 @@
     </div>
     <div class="bg-primary container-fluid my-5">
         <div class="px-3 py-5 gy-4 row justify-content-evenly align-items-center">
-            <div class="col-sm-12 col-lg-3 d-none d-lg-block">
+            <div class="col-sm-12 col-lg-3 d-none d-lg-block pb-4">
                 <picture>
                     <source media="(min-width: 1200px)" srcset="{{ homepage.sell_tickets_banner_image_1200.url }}">
                     <source media="(min-width: 992px)" srcset="{{ homepage.sell_tickets_banner_image_992.url }}">
                     <source media="(min-width: 576px)" srcset="{{ homepage.sell_tickets_banner_image_576.url }}">
-                    <img src="{{ homepage.sell_tickets_banner_image_576.url }}" alt="{{ homepage.sell_tickets_banner_title }} Image" loading="lazy" class="img-fluid rounded-2 my-4">
+                    <img src="{{ homepage.sell_tickets_banner_image_576.url }}" alt="{{ homepage.sell_tickets_banner_title }} Image" loading="lazy" class="img-fluid rounded-2">
                 </picture>
             </div>
             <div class="col-sm-12 col-lg-6 mb-4">
@@ -197,7 +183,7 @@
             <div class="col-sm-12 col-lg-4">
                 <div class="bg-white rounded-4 p-4">
                     <div class="d-flex flex-row align-items-center justify-content-start gap-3">
-                        <img style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%" src="{{ testimonial.image_link }}" alt="{{ testimonial.name }}'s Image" class="img-fluid">
+                        <img style="height: 50px; width: 50px; object-fit: cover; border-radius: 50%" src="{{ testimonial.get_image }}" alt="{{ testimonial.name }}'s Image" class="img-fluid">
                         <div class="d-flex flex-column gap-2">
                             <p class="my-0 fw-500">{{ testimonial.name }}</p>
                             <div class="d-flex flex-row gap-1">
@@ -213,15 +199,15 @@
             {% endfor %}
         </div>
     </div>
-    <div class="px-lg-5 px-4 my-5">
+    <div class="px-lg-5 px-4 pb-5 my-5">
         <div class="py-5 row justify-content-center align-items-center">
-            <div class="col-sm-12 col-lg-3 text-center d-none d-lg-block">
+            <div class="col-sm-12 col-lg-4 col-xl-5 text-center d-none d-lg-block">
                 <img src="{{ homepage.newsletter_image.url }}" alt="Newsletter" loading="lazy" class="img-fluid">
             </div>
-            <div class="col-sm-12 col-lg-7">
-                <h1 class="display-4">{{ homepage.newsletter_banner_title }}</h1>
+            <div class="col-sm-12 col-lg-6">
+                <h1 class="display-5">{{ homepage.newsletter_banner_title }}</h1>
                 <p class="lead text-muted fw-300 mb-4 mt-3">{{ homepage.newsletter_banner_paragraph }}</p>
-                <div class="col-sm-12 col-lg-4 text-center">
+                <div class="col-sm-12 col-lg-5 col-xl-3 text-center">
                     <button class="btn btn-primary px-4 btn-lg w-100">{{ homepage.newsletter_banner_btn }}</button>
                 </div>
             </div>
