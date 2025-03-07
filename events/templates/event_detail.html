@@ -1,74 +1,75 @@
 {% extends 'base.html' %}
 {% block body %}
 {% load static %}
-<div class="container-fluid px-0">
+<main class="container-fluid px-0">
     <div class="position-relative">
         <button onclick="goBack()" class="no-btn position-absolute top-0 start-0 m-3">
-            <i style="font-size: 2rem;" class="text-white fa-solid fa-arrow-left"></i>
+            <i style="font-size: 1.5rem;" class="text-white fa-solid fa-arrow-left"></i>
         </button>
-        <img src="{{ event.poster }}" alt="{{ event.name }}'s Poster" class="img-fluid" style="height: 80vh; width: 100%; object-fit: cover;">
+        <img src="{{ event.get_landscape_poster }}" alt="{{ event.name }}'s Poster" class="img-fluid w-100">
     </div>
-    <div class="container my-5 px-4">
-        <div class="row">
+    <div class="px-lg-5 px-4 mb-5">
+        <div class="row mt-4 gy-4">
             <div class="col-sm-12 col-lg-8">
-                <h2 class="fw-bold text-secondary">{{ event.name }}</h2>
-                <p class="text-black-50">Hosted by {{ event.host }}, {{ event.event_description }}</p>
+                <small class="fw-300 text-primary">{{ event.category.name }}</small>
+                <h1 class="fw-600">{{ event.name }}</h1>
+                <p class="text-black-50">Hosted by {{ event.host }}, {{ event.event_description|lower }}</p>
                 <div class="d-flex my-3 flex-row flex-wrap justify-content-start">
                     <div class="col-6">
                         <p class="small mb-0 text-muted fw-300">Date</p>
-                        <h5 class="text-muted">{{ event.date }}</h5>
+                        <h5>{{ event.date }}</h5>
                     </div>
                     <div class="col-6">
                         <p class="small mb-0 text-muted fw-300">Time</p>
-                        <h5 class="text-muted">{{ event.start_time }} - {{ event.end_time }}</h5>
+                        <h5>{{ event.start_time }} - {{ event.end_time }}</h5>
                     </div>
                     <div class="col-6">
                         <p class="small mb-0 text-muted fw-300">Location</p>
-                        <h5 class="text-muted">{{ event.location }}</h5>
+                        <h5>{{ event.location }}</h5>
                     </div>
                     <div class="col-6">
                         <p class="small mb-0 text-muted fw-300">Venue</p>
-                        <h5 class="text-muted">{{ event.venue }}</h5>
+                        <h5>{{ event.venue }}</h5>
+                    </div>
+                </div>
+                {% if event.map %}
+                    <div class="responsive-video-container border rounded-4">{{ event.map|safe }}</div>
+                {% endif %}
+            </div>
+            <div class="col-sm-12 col-lg-4">
+                <div class="sticky-top fixed-top" style="top: 2rem;">
+                    <h2 class="fw-600">Tickets</h2>
+                    {% if event.get_ticket_categories %}
+                    <div class="d-flex my-3 flex-row flex-wrap justify-content-start">
+                        {% for ticket in event.get_ticket_categories %}
+                        <div class="col-6">
+                            <p class="small text-muted mb-0 fw-300">{{ ticket.get_category_name_display }}</p>
+                            <h5>{{ ticket.price|floatformat }} Ksh</h5>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="d-none d-lg-block mb-3">
+                        <a href="{% url 'cart' event.slug event.pk %}" class="btn btn-primary btn-lg w-100 rounded-3">Buy ticket</a>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-lg-4">
-                <h2 class="fw-bold text-secondary">Tickets</h2>
-                <div class="d-flex my-3 flex-row flex-wrap justify-content-start">
-                    {% for ticket in event.get_ticket_categories %}
-                    <div class="col-6">
-                        <p class="small mb-0 text-muted fw-300">{{ ticket.get_category_name_display }}</p>
-                        <h5 class="text-muted">{{ ticket.price|floatformat }} Ksh</h5>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
         </div>
-        <div class="row justify-content-center mt-3 mb-5">
-            <div class="col-sm-12 col-lg-4">
-                <a href="{% url 'cart' event.slug event.pk %}" class="btn btn-primary w-100 btn-lg rounded-pill py-3 px-5">Buy ticket</a>
-            </div>
-        </div>
-        {% if event.map %}
-        <div class="row justify-content-center my-5">
-            <div class="my-5">
-                <h3 class="mb-4 text-dark">Exact map location</h3>
-                <div class="responsive-video-container">
-                    {{ event.map|safe }}
-                </div>
-            </div>
-        </div>
-        {% endif %}
+        <hr class="text-muted mt-5">
         <h3 class="mb-3 mt-5 text-dark">Similar upcoming events</h3>
-        <!-- <div class="d-flex flex-row gap-3 mt-3 pb-4 events-overflow"> -->
-        <div class="container p-0 m-0">
-            <div class="row row-cols-2 g-3 mt-3 pb-4 justify-content-start align-items-start">
-                {% for event in upcoming_events|slice:5 %}
-                <div class="col-sm-6 col-lg-4">
-                    {% include 'components/event.html' %}
-                </div>
-                {% endfor %}
+        <div class="row g-3 row-cols-2 align-items-start">
+            {% for event in upcoming_events|slice:4 %}
+            <div class="col-sm-6 col-lg-3 col-xxl-3">
+                {% include 'components/event.html' %}
             </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+<div class="fixed-bottom d-lg-none d-sm-block bg-white p-3 shadow">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-lg-4">
+            <a href="{% url 'cart' event.slug event.pk %}" class="btn btn-primary btn-lg w-100 rounded-3">Buy ticket</a>
         </div>
     </div>
 </div>
