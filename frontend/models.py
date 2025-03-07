@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 
 
 class Testimonial(models.Model):
@@ -12,6 +13,14 @@ class Testimonial(models.Model):
     image_link = models.TextField(blank=True, null=True)
     stars = models.PositiveIntegerField(default=5)
 
+    @property
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        elif self.image_link:
+            return self.image_link
+        return static('tikitizetu_square_thumbnail.jpg')
+        
     def __str__(self):
         return f"{self.name}' Testimonial - Posted On: {self.pub_date.strftime('%A, %B %d, %Y')}"
 
