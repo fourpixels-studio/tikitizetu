@@ -2,10 +2,9 @@
 {% block body %}
 {% load static %}
 {% load custom_filters %}
-<!-- Toast Container -->
-<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="ticketCategoryToast" class="toast bg-warning text-dark" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body"><!-- Message will be set dynamically --></div>
+<div id="toastContainer" class="toast-container position-fixed top-5 start-0 p-3">
+    <div id="ticketCategoryToast" class="toast rounded-3 bg-warning text-dark" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body"></div>
     </div>
 </div>
 <main class="container-fluid">
@@ -22,12 +21,12 @@
                             <span class="text-dark fw-500 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">02</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">02</span>
                             <span class="text-muted fw-400">Ticket</span>
                             <span class="text-muted fw-400 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">03</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">03</span>
                             <span class="text-muted fw-400">Payment</span>
                         </div>
                     </div>
@@ -37,33 +36,34 @@
             {% csrf_token %}
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-6 col-sm-12">
-                    <div class="border rounded-4 bg-white p-4">
+                    <div class="border rounded-3 bg-white p-4">
                         <p class="text-muted mb-3 fw-400">Provide your contact information. This will be used to send your ticket and will appear on it.</p>
                         <input type="hidden" name="event" value="{{ event.id }}">
-                        <div class="form-floating">
-                            <input type="text" class="rounded-4 form-control" name="first_name" placeholder="First Name">
-                            <label for="first_name">First Name</label>
+                        <div class="mb-3">
+                            <label class="mb-1 text-muted" for="first_name">First Name</label>
+                            <input type="text" class="rounded-2 form-control" name="first_name" placeholder="John">
                             <div class="invalid-feedback">First name is required.</div>
                         </div>
-                        <div class="form-floating my-3">
-                            <input type="text" class="rounded-4 form-control" name="last_name" placeholder="Last Name">
-                            <label for="last_name">Last Name</label>
+                        <div class="mb-3">
+                            <label class="mb-1 text-muted" for="last_name">Last Name</label>
+                            <input type="text" class="rounded-2 form-control" name="last_name" placeholder="Doe">
                             <div class="invalid-feedback">Last name is required.</div>
                         </div>
-                        <div class="form-floating">
-                            <input type="email" class="rounded-4 form-control" name="email" placeholder="Email">
-                            <label for="email">Email</label>
+                        <div class="mb-3">
+                            <label class="mb-1 text-muted" for="email">Email</label>
+                            <input type="email" class="rounded-2 form-control" name="email" placeholder="myaddress@website.com">
                             <div class="invalid-feedback">Valid email address is required.</div>
                         </div>
-                        <div class="form-floating mt-3">
-                            <input type="tel" class="rounded-4 form-control" name="phone_number" placeholder="Phone Number">
-                            <label for="phone_number">Phone Number</label>
+                        <div class="mb-3">
+                            <label class="mb-1 text-muted" for="phone_number">Phone Number</label>
+                            <input type="tel" class="rounded-2 form-control" name="phone_number" placeholder="0700 000 000">
                         </div>
                     </div>
-                    <div class="mt-3 d-flex flex-row align-items-center flex-row justify-content-between gap-3">
-                        <a class="btn btn-outline-secondary btn-lg w-50 rounded-4" href="{{ event.get_url }}">Cancel</a>
-                        <div class="btn btn-primary w-100 btn-lg rounded-4" id="showStep2Btn">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
+                    <div class="my-3 d-flex flex-row align-items-center flex-row justify-content-between gap-3">
+                        <a class="btn btn-outline-secondary btn-lg w-50 rounded-2" href="{{ event.get_url }}">Cancel</a>
+                        <div class="btn btn-primary w-100 btn-lg rounded-2" id="showStep2Btn">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
                     </div>
+                    <small style="font-size: .8rem;" class="fw-300 text-muted">Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our Privacy Policy.</small>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                 <div class="col-sm-12 col-lg-6">
                     <div class="d-flex mb-3 flex-row align-items-center justify-content-between flex-wrap">
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">01</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">01</span>
                             <span class="text-muted fw-400">Details</span>
                             <span class="text-muted fw-400 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
@@ -83,7 +83,7 @@
                             <span class="text-dark fw-400 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">03</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">03</span>
                             <span class="text-muted fw-400">Payment</span>
                         </div>
                     </div>
@@ -91,9 +91,9 @@
             </div>
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-6 col-sm-12">
-                    <div class="border rounded-4 bg-white p-4">
-                        <p class="text-muted mb-3 fw-400">Choose the ticket category that best suits you. Prices may vary.</p>
-                        <div class="table-responsive rounded-4">
+                    <div class="border rounded-3 bg-white p-4">
+                        <p class="text-muted mb-3 fw-400">Choose the ticket category that best suits you. Prices may vary. Make sure your ticket details are correct before proceeding to payment.</p>
+                        <div class="table-responsive rounded-3">
                             <table class="table border-4">
                                 <thead>
                                     <tr>
@@ -138,8 +138,8 @@
                         <input type="hidden" name="amount" id="amountInput" value="0">
                     </div>
                     <div class="mt-3 d-flex flex-row align-items-center flex-row justify-content-between gap-3">
-                        <div class="btn btn-outline-secondary btn-lg w-50 rounded-4" id="backToStep1Btn">Back</div>
-                        <div class="btn btn-primary w-100 btn-lg rounded-4" id="showStep3Btn">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
+                        <div class="btn btn-outline-secondary btn-lg w-50 rounded-2" id="backToStep1Btn">Back</div>
+                        <div class="btn btn-primary w-100 btn-lg rounded-2" id="showStep3Btn">Next <i style="font-size: .9rem;" class="ms-2 fa-solid fa-chevron-right"></i></div>
                     </div>
                 </div>
             </div>
@@ -151,12 +151,12 @@
                 <div class="col-sm-12 col-lg-6">
                     <div class="d-flex mb-3 flex-row align-items-center justify-content-between flex-wrap">
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">01</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">01</span>
                             <span class="text-muted fw-400">Details</span>
                             <span class="text-muted fw-400 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
                         <div class="col text-center align-items-center d-flex flex-row justify-content-center">
-                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted border">02</span>
+                            <span class="rounded-pill p-2 fw-400 bg-grey badge me-2 text-muted">02</span>
                             <span class="text-muted fw-400">Ticket</span>
                             <span class="text-muted fw-400 ms-3"><i class="fa-solid fa-arrow-right-long"></i></span>
                         </div>
@@ -169,31 +169,132 @@
             </div>
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-6 col-sm-12">
-                    <div class="border rounded-4 bg-white p-4">
-                        <p class="text-muted mb-3 fw-400">Select your preferred payment method.</p>
-                        <div class="border rounded-4 p-3 bg-white mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input hover" type="radio" name="payment_method" value="safaricom" id="safaricomFlexRadio">
-                                <label class="form-check-label" for="safaricomFlexRadio">
-                                    Pay with M-Pesa
-                                </label>
+                    <div class="border rounded-3 bg-white p-4">
+                        {% if event.event_disclaimer %}
+                        <h6 class="text-dark">Disclaimer from {{ event.host }}:</h6>
+                        <p class="text-muted lead mb-4">{{ event.event_disclaimer }}</p>
+                        {% endif %}
+                        <h6 class="text-dark mb-3">{{ event.name }}'s details</h4>
+                        <div class="row gx-2 justify-content-start">
+                            <div class="col-3">
+                                <p class="my-0 text-muted fw-300">Date:</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="my-0 fw-400">{{ event.date }}</p>
                             </div>
                         </div>
-                        <div class="border rounded-4 p-3 bg-white">
-                            <div class="form-check">
-                                <input class="form-check-input hover" type="radio" name="payment_method" value="pesapal" id="pesapalFlexRadio">
-                                <label class="form-check-label" for="pesapalFlexRadio">
-                                    Pay with Card
-                                </label>
+                        <div class="row gx-2 justify-content-start">
+                            <div class="col-3">
+                                <p class="my-0 text-muted fw-300">Starts at</p>
                             </div>
+                            <div class="col-6">
+                                <p class="my-0 fw-400">{{ event.start_time }}</p>
+                            </div>
+                        </div>
+                        <div class="row gx-2 justify-content-start">
+                            <div class="col-3">
+                                <p class="my-0 text-muted fw-300">Venue:</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="my-0 fw-400">{{ event.venue }}</p>
+                            </div>
+                        </div>
+                        <div class="row gx-2 justify-content-start">
+                            <div class="col-3">
+                                <p class="my-0 text-muted fw-300">Location:</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="my-0 fw-400">{{ event.location }}</p>
+                            </div>
+                        </div>
+                        <hr class="text-super-light">
+                        <small class="text-muted my-3 fw-30">Accepted payment methods</small>
+                        <div class="d-flex flex border mt-2 justify-content-around rounded-3 p-2">
+                            <img src="{% static 'images/payment-icons/mastercard-svgrepo-com.svg' %}" alt="Master Card Logo" style="height: 50px; width: auto; object-fit: cover;">
+                            <img src="{% static 'images/payment-icons/visa-svgrepo-com.svg' %}" alt="Visa Logo" style="height: 50px; width: auto; object-fit: cover;">
+                            <img src="{% static 'images/payment-icons/american-express-svgrepo-com.svg' %}" alt="American Express Logo" style="height: 50px; width: auto; object-fit: cover;">
+                            <img src="{% static 'images/payment-icons/M-PESA_LOGO-01.svg.png' %}" alt="M-Pesa Logo" style="height: 50px; width: auto; object-fit: cover;">
+                            <img src="{% static 'images/payment-icons/airtel-money.svg' %}" alt="Airtel Money Logo" style="height: 30px; width: auto; object-fit: cover; margin-top:10px">
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input hover" value="True" name="terms_conditions" id="terms_conditions">
+                            <label class="fw-400 small text-muted" for="terms_conditions">I have read and agree to the website Terms and Conditions</label>
                         </div>
                     </div>
                     <div class="mt-3 d-flex flex-row align-items-center flex-row justify-content-between gap-3">
-                        <div class="btn btn-outline-secondary btn-lg w-50 rounded-4" id="backToStep2Btn">Back</div>
-                        <button type="submit" id="payNowBtn" class="btn btn-primary w-100 btn-lg rounded-4">Pay Now</button>
+                        <div class="btn btn-outline-secondary btn-lg w-50 rounded-2" id="backToStep2Btn">Back</div>
+                        <button type="submit" id="payNowBtn" class="btn btn-primary w-100 btn-lg rounded-2">Pay Now</button>
                     </div>
                     </form>
                 </div>
+            </div>
+        </div>
+
+        <div class="row g-5 mt-3 justify-content-center">
+            <div class="col-sm-12 col-lg-6">
+                <div class="bg-black rounded-3 p-3 mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-4">
+                            <img src="{{ event.poster }}" alt="{{ event.name }}'s Poster" class="img-fluid rounded-3" style="height: 100%; width: auto; object-fit: cover">
+                        </div>
+                        <div class="col-7">
+                            <div class="d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="my-0 fw-500 text-white">{{ event.name }}</h6>
+                                    <small class="text-white">{{ event.date }}</small>
+                                    <small class="text-white">At {{ event.venue }}</small>
+                                </div>
+                                <div class="mt-2">
+                                    <img src="{% static 'images/barcode.png' %}" alt="Barcode" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-5 mt-4">
+            <div class="col-sm-12 col-lg-6">
+                <h5 class="fw-600 mb-3">Secure Payments with Pesapal</h5>
+                <p class="text-muted fw-300">Tikiti Zetu uses Pesapal to ensure safe and seamless transactions. Choose from multiple payment options and complete your order with confidence. All transactions are encrypted and processed securely.</p>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <h5 class="fw-600 mb-3">Accepted Payment Methods via Pesapal:</h6>
+                <ul>
+                    <li class="text-muted fw-300"><b>M-Pesa & Airtel Money</b> – Pay via mobile money in just a few clicks.</li>
+                    <li class="text-muted fw-300"><b>Credit & Debit Cards</b> – Secure payments using Visa & Mastercard.</li>
+                    <li class="text-muted fw-300"><b>Bank Transfers</b> – Available for select banks via Pesapal.</li>
+                </ul>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <h5 class="fw-600 mb-3">Frequently asked questions (FAQs)</h5>
+                <ol>
+                    <li class="text-muted">
+                        <h6 class="fw-600">How will I receive my ticket after payment?</h6>
+                        <p class="fw-300">Once your payment is successful, you will receive an email with your e-ticket as a PDF attachment. You can also download it directly from your email or account.</p>
+                    </li>
+                    <li class="text-muted">
+                        <h6 class="fw-600">Is my payment secure?</h6>
+                        <p class="fw-300">Yes! We use <a href="https://www.pesapal.com" class="hover-underline text-muted fw-400">Pesapal</a>, a trusted payment gateway with advanced encryption and fraud protection. Your details are never shared with third parties.</p>
+                    </li>
+                    <li class="text-muted">
+                        <h6 class="fw-600">What happens if my payment fails?</h6>
+                        <p class="fw-300">If your payment fails, check your internet connection, mobile money balance, or card details and try again. If the issue persists, <a href="{% url 'contact' %}" class="text-muted fw-400">contact</a> our support team.</p>
+                    </li>
+                    <li class="text-muted">
+                        <h6 class="fw-600">Can I get a refund if I can’t attend the event?</h6>
+                        <p class="fw-300">Refund policies depend on the event organizer. Check the event terms before purchasing. If eligible, contact support for assistance.</p>
+                    </li>
+                    <li class="text-muted">
+                        <h6 class="fw-600">Do I need to print my ticket?</h6>
+                        <p class="fw-300">No! Your ticket QR code can be scanned directly from your phone at the event entrance.</p>
+                    </li>
+                </ol>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <h5 class="fw-600 mb-3">Need Help? Contact Us!</h5>
+                <a href="emailto:support@tikitizetu.com" class="hover-underline fw-400 text-muted">Email: support@tikitizetu.com</a> <br>
+                <a href="https://www.instagram.com/tikiti_zetu/" target="_blank" class="hover-underline fw-400 text-muted">Instagram DM: @tikiti_zetu</a>
             </div>
         </div>
     </div>
