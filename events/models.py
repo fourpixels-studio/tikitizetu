@@ -1,4 +1,5 @@
 from django.db import models
+from hosts.models import Host
 from django.urls import reverse
 from django.conf import settings
 from django.utils.text import slugify
@@ -41,7 +42,7 @@ class Event(models.Model):
     confirmation_email_subject = models.TextField(null=True, blank=True)
     confirmation_email_message = models.TextField(null=True, blank=True)
     slug = models.SlugField(unique=True, null=True, blank=True)
-    host = models.CharField(max_length=200, null=True, blank=True)
+    host = models.ForeignKey(Host, on_delete=models.CASCADE, related_name='host', blank=True, null=True)
     likes = models.CharField(default=0, max_length=9, null=True, blank=True)
     map = models.TextField(null=True, blank=True)
     meta_thumbnail = ResizedImageField(size=[1200, 630], crop=['middle', 'center'],quality=75, upload_to='events_posters/thumbnails/', blank=True, null=True)
