@@ -1,5 +1,5 @@
 <a href="{{ event.get_url }}" class="no-link">
-    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden">
+    <div class="bg-white hover-shadow" style="border-radius: 10px; overflow: hidden" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
         <div class="mb-2" style="position: relative; overflow: hidden">
             <img src="{{ event.get_square_thumbnail }}" alt="{{ event.name }}'s Poster" style="border-radius: 10px 10px 0 0;" class="img-fluid">
             <small 
