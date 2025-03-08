@@ -151,28 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Payment step validation (optional)
+    // Payment step validation
     function validatePaymentStep() {
-        const cardName = document.querySelector('input[name="card_name"]');
-        const cardNumber = document.querySelector('input[name="card_number"]');
-        const cvcNumber = document.querySelector('input[name="cvc_number"]');
-        const expiryDate = document.querySelector('input[name="expiry_date"]');
+        const termsCheckbox = document.querySelector('input[name="terms_conditions"]');
 
-        // Basic validation for card details (you can add more complex validations)
-        if (isFieldEmpty(cardName)) {
-            showToast("Please enter the name on the card.");
-            return false;
-        }
-        if (isFieldEmpty(cardNumber)) {
-            showToast("Please enter a valid card number.");
-            return false;
-        }
-        if (isFieldEmpty(cvcNumber)) {
-            showToast("Please enter the CVV number.");
-            return false;
-        }
-        if (isFieldEmpty(expiryDate)) {
-            showToast("Please enter the expiry date.");
+        if (!termsCheckbox.checked) {
+            showToast("You must agree to the terms and conditions.");
             return false;
         }
 
@@ -199,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const payNowButton = document.getElementById('payNowBtn');
     payNowButton.addEventListener('click', function(e) {
         if (!validatePaymentStep()) {
-            e.preventDefault(); // Prevent form submission if validation fails
+            e.preventDefault();
         }
     });
 });
