@@ -355,3 +355,6 @@ background-color: rgb(52, 89, 52);
     transform: scale(1.1);
     transition: transform .2s ease-in-out;
 }
+.bg-black{
+    background-color: #000000;
+}
